@@ -1,0 +1,1966 @@
+openapi: 3.1.0
+info:
+  title: Knowledge Search agent tako API
+  version: 1.0.0
+servers:
+- url: https://tako.com/api/
+  description: Tako Production API Server
+tags:
+- name: tako
+paths:
+  /v3/search:
+    post:
+      tags:
+      - tako
+      summary: Search
+      description: Fast-pipeline knowledge search. Returns Tako cards (and web results when requested) with no LLM synthesis.
+      operationId: search
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+      responses:
+        '200':
+          description: Fast-pipeline search results (Tako cards + web results)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          description: Invalid request data (validation or malformed body).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+        '408':
+          description: The request exceeded the processing time limit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+      security:
+      - apiKey: []
+  /v1/answer:
+    post:
+      tags:
+      - tako
+      summary: Answer
+      description: Fast-pipeline retrieval plus an LLM-synthesized answer with confidence. Replaces the grounding endpoint.
+      operationId: answer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+      responses:
+        '200':
+          description: Synthesized answer grounded in Tako results, web results, or both
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnswerResponse'
+        '400':
+          description: Invalid request data (validation or malformed body).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+        '408':
+          description: The request exceeded the processing time limit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+      security:
+      - apiKey: []
+  /beta/graph/search:
+    get:
+      tags:
+      - tako
+      summary: Search the data graph
+      description: 'Resolve a metric or entity in Tako''s data graph by name. Use this to discover and confirm what data exists before you query. For example, resolve the metric and the entity here, then ask /v3/search or /v1/answer for that entity + metric combination. Public and unauthenticated. Note: Tako does not yet filter results to the production-ready inventory. A returned metric or entity without a production fact table can 404 when you pass it to /beta/graph/related. Pass label to prefer a NER label (a ranking boost, not a filter); by default Tako infers the label from q.'
+      operationId: graphSearch
+      parameters:
+      - description: Search text (min 2 chars).
+        required: true
+        schema:
+          type: string
+        name: q
+        in: query
+      - description: 'Comma-separated facets: metric,entity.'
+        required: false
+        schema:
+          type: string
+        name: types
+        in: query
+      - description: Max results (default 20, max 50).
+        required: false
+        schema:
+          type: integer
+        name: limit
+        in: query
+      - description: Prefer results with this NER label (boost, not a filter — matching nodes rank higher; others still return). Supplying label disables inference.
+        required: false
+        schema:
+          type: string
+          enum:
+          - PERSON
+          - ORG
+          - GPE
+          - LOC
+          - PRODUCT
+          - EVENT
+          - LANGUAGE
+          - MONEY
+          - METRIC
+          - STOCK_TICKER
+          - WEBSITE
+        name: label
+        in: query
+      - description: When true, Tako NER infers the label and grounded-node boosts from q. Set false to disable. Tako ignores this parameter when you supply label. Default true.
+        required: false
+        schema:
+          type: boolean
+        name: infer_label
+        in: query
+      responses:
+        '200':
+          description: Matching metrics and entities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphSearchResponse'
+        '400':
+          description: Invalid request data (validation or malformed body).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+        '503':
+          description: A backing data store is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+  /beta/graph/related:
+    get:
+      tags:
+      - tako
+      summary: Get a graph node's related nodes
+      description: 'Explore what a node connects to. The overview returns an ordered `relations` list: named relationships (for example `rel:competes_with`, `rel:in_industry`) first, then a node''s metrics and entities, then similar nodes and membership (part_of, members). The metrics and entities are the entity + metric combinations Tako covers — query /v3/search or /v1/answer for one. Each group carries a stable `key`. Pass `relation`=<key> plus cursor to paginate that one group. Pass the optional q to narrow by a case-insensitive substring on names and aliases (for example, the metrics of an entity that match ''gdp''). Public and unauthenticated.'
+      operationId: graphRelated
+      parameters:
+      - description: Opaque public id of the node.
+        required: true
+        schema:
+          type: string
+        name: node_id
+        in: query
+      - description: Relation key to paginate, for example `rel:competes_with`, `metrics`, `entities`, `siblings`, or `members`.
+        required: false
+        schema:
+          type: string
+        name: relation
+        in: query
+      - description: 'Deprecated: use `relation`. A legacy facet name (metric, entity, sibling, or member) that maps to a key.'
+        required: false
+        deprecated: true
+        schema:
+          type: string
+        name: relation_type
+        in: query
+      - description: Optional case-insensitive substring filter on the related nodes' names and aliases. It filters every group of the overview, or the single paginated group when you set `relation`.
+        required: false
+        schema:
+          type: string
+        name: q
+        in: query
+      - description: Opaque pagination cursor.
+        required: false
+        schema:
+          type: string
+        name: cursor
+        in: query
+      - description: Page size (default 50, max 100).
+        required: false
+        schema:
+          type: integer
+        name: limit
+        in: query
+      - description: 'Prefer related nodes with this NER label. This is a boost, not a filter: matching nodes rank higher within each relation, and totals do not change. Supplying label disables inference.'
+        required: false
+        schema:
+          type: string
+          enum:
+          - PERSON
+          - ORG
+          - GPE
+          - LOC
+          - PRODUCT
+          - EVENT
+          - LANGUAGE
+          - MONEY
+          - METRIC
+          - STOCK_TICKER
+          - WEBSITE
+        name: label
+        in: query
+      - description: When true, Tako NER infers the label and grounded-node boosts from q. Set false to disable. Tako ignores this parameter when you supply label. It applies only when q is present. Default true.
+        required: false
+        schema:
+          type: boolean
+        name: infer_label
+        in: query
+      responses:
+        '200':
+          description: A node's details plus related nodes by facet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphRelatedResponse'
+        '400':
+          description: Invalid request data (validation or malformed body).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+        '404':
+          description: The requested resource does not exist or has no exportable data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+        '503':
+          description: A backing data store is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+  /beta/graph/node/{id}:
+    get:
+      tags:
+      - tako
+      summary: Get a graph node by id
+      description: Resolve a single node by its opaque public id. Search cards, /beta/graph/search, and /beta/graph/related return these ids. Returns the node's name, type, aliases, and description. Public and unauthenticated.
+      operationId: graphNode
+      parameters:
+      - description: Opaque public id of the node.
+        required: true
+        schema:
+          type: string
+        name: id
+        in: path
+      responses:
+        '200':
+          description: A single graph node
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GraphNode'
+        '404':
+          description: The requested resource does not exist or has no exportable data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+        '503':
+          description: A backing data store is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+  /v1/contents:
+    post:
+      tags:
+      - tako
+      summary: Download content
+      description: 'Download the content behind a search result: a CSV of a Tako card''s underlying data, or the full text of a web page. Returns a short-lived presigned download URL. Protected-source cards (data export not available) return 403. Send `quote_only: true` to get only the export''s price (`cost` + `export_pricing`) with an empty payload. A quote is free: Tako fetches nothing and charges nothing.'
+      operationId: contents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContentsRequest'
+      responses:
+        '200':
+          description: 'Downloadable content for a result: a presigned URL plus format and cost metadata. For a `quote_only` request the item instead carries only the price (`cost` + `export_pricing`) with all payload and url fields null.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentsResponse'
+        '400':
+          description: Invalid request data (validation or malformed body).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+        '403':
+          description: Action not permitted for this resource (for example, a protected-source export).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+        '404':
+          description: The requested resource does not exist or has no exportable data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseAPIError'
+      security:
+      - apiKey: []
+  /v1/thin_viz/create/:
+    post:
+      tags:
+      - tako
+      description: 'Create a visualization card directly from component configurations. Supported component types: header, generic_timeseries, categorical_bar, stock_boxes, financial_boxes, table.'
+      operationId: createCard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCardRequest'
+      responses:
+        '200':
+          description: Card created successfully from schema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThinVizCard'
+        '400':
+          description: Bad request - validation error or component mismatch
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+                type: object
+                required:
+                - error
+        '404':
+          description: Schema not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+                type: object
+                required:
+                - error
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+                type: object
+                required:
+                - error
+      security:
+      - apiKey: []
+components:
+  schemas:
+    KnowledgeCardMethodology:
+      properties:
+        methodology_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Methodology Name
+          description: The name of the methodology
+          examples:
+          - Where the Data Comes From - S&P Global
+        methodology_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Methodology Description
+          description: 'A concise, one-sentence summary of the methodology: the source and what it measures. When no concise summary is available, this carries the full methodology text.'
+          examples:
+          - Financial metrics standardized by S&P Global from company regulatory filings, press releases, and restatements.
+      type: object
+      required:
+      - methodology_name
+      - methodology_description
+      title: KnowledgeCardMethodology
+    ContentsFormat:
+      type: string
+      enum:
+      - csv
+      - json_records
+      - json_compact
+      title: ContentsFormat
+      description: 'Serialization of tabular (Tako card) data. Web content is always raw text
+
+        and carries no content format (content_format is null).'
+    WebResult:
+      properties:
+        title:
+          type: string
+          title: Title
+          description: Title of the web page.
+        url:
+          type: string
+          title: Url
+          description: URL of the web page.
+        snippet:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Snippet
+          description: Excerpt(s) from the page that matched the query.
+        source_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Name
+          description: Publisher or domain name, when Tako can extract it from the URL.
+        publish_date:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Publish Date
+          description: Publication date of the page, when available.
+        content:
+          anyOf:
+          - $ref: '#/components/schemas/ResultContent'
+          - type: 'null'
+          description: Downloadable content descriptor for this result, fetched via the Contents endpoint. Web results are always downloadable as text. None for callers that do not populate it.
+        citation_number:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Citation Number
+          description: 1-based citation number that the answer's inline [N] markers reference. Set only when the answer inline-cites this result (the Agent API); None on raw-retrieval surfaces.
+      type: object
+      required:
+      - title
+      - url
+      title: WebResult
+      description: 'A single raw web search result from the WEB source index.
+
+
+        Distinct from `KnowledgeCardSource` (a citation inside a synthesized
+
+        answer) and `KnowledgeCard` (a Tako visualization). Web results are
+
+        raw retrieval output — title, URL, optional snippet. They do not depend
+
+        on any LLM synthesis that may also happen over them.'
+    DataSourceSettings:
+      properties:
+        count:
+          type: integer
+          maximum: 20.0
+          minimum: 1.0
+          title: Count
+          description: Maximum number of results to return for this source. 1-20.
+          default: 5
+        include_contents:
+          type: boolean
+          title: Include Contents
+          description: Inline this source's underlying data directly in the response. For the Tako data source, that is serialized card data (see content_format). For web results, that is the extracted text.
+          default: false
+        mode:
+          $ref: '#/components/schemas/ContentsDeliveryMode'
+          description: Delivery for inlined card data when include_contents is true. For Tako cards, include_contents always returns a small free inline preview of the most-recent rows in the response body. This field therefore has no effect on Tako cards; it stays for schema stability. total_rows and truncated on the returned content indicate when more data is available. For the full, priced export, call POST /api/v1/contents, which supports mode='url' for a presigned download link.
+          default: inline
+        content_format:
+          $ref: '#/components/schemas/ContentsFormat'
+          description: 'Serialization for card data: ''json_compact'' (default), ''json_records'', or ''csv''.'
+          default: json_compact
+        node_ids:
+          items:
+            type: string
+          type: array
+          maxItems: 20
+          title: Node Ids
+          description: 'Graph node ids to pin into the search; the /beta/graph endpoints return these ids. Pinned nodes always become retrieval candidates and get a strong boost; organic results do not change. Ids are not durable across knowledge-graph rebuilds: the search skips an id that no longer resolves (in strict mode it simply cannot match). Malformed ids fail the request with a 400. Max 20.'
+        strict:
+          type: boolean
+          title: Strict
+          description: When true, return only data cards that match at least one node in node_ids (which must then be non-empty). When false (the default), pinned nodes rank first but organic results still return. Web results do not change either way.
+          default: false
+      additionalProperties: false
+      type: object
+      title: DataSourceSettings
+      description: 'Tako data (card) source settings. It adds the two contents-export
+
+        fields on top of the base count and include_contents. Web sources use the
+
+        base SourceSettings: Tako always inlines web content as raw text, so web
+
+        carries neither field.'
+    CreateCardRequest:
+      properties:
+        components:
+          items:
+            $ref: '#/components/schemas/ComponentConfig'
+          type: array
+          title: Components
+          description: Full component configurations
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+          description: Card title (falls back to header component title)
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Card description
+        source:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source
+          description: Data source attribution (displayed in footer)
+        height:
+          anyOf:
+          - type: integer
+            maximum: 2000.0
+            minimum: 100.0
+          - type: 'null'
+          title: Height
+          description: Chart height in pixels. When set, overrides the default aspect-ratio-based height for all chart components in this card. Must be between 100 and 2000.
+        postmessage_embed:
+          type: boolean
+          title: Postmessage Embed
+          description: When True, the embed iframe operates in postMessage mode. The parent page injects visualization_data via window.postMessage after the iframe loads; the embed URL carries no inline data. The response includes embed_mode='postmessage' when this is True, and embed_mode='post' otherwise.
+          default: false
+        normalize_currencies:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Normalize Currencies
+          description: Target ISO 4217 currency code (for example, 'USD' or 'EUR'). When set, Tako converts datasets with recognized currency units to this currency with historical exchange rates. Tako also adds a methodology section that explains the conversion.
+        image_ttl_minutes:
+          anyOf:
+          - type: integer
+            maximum: 1440.0
+            minimum: 1.0
+          - type: 'null'
+          title: Image Ttl Minutes
+          description: Minutes to keep the preview image available for download (zero-data-retention (ZDR) cards only). Min 1, max 1440 (24 hours). When set on a ZDR card, Tako generates a temporary preview image and keeps it available for download until the TTL expires. Non-ZDR cards ignore this field.
+      type: object
+      required:
+      - components
+      title: CreateCardRequest
+      description: Request model for creating a card directly with components.
+    AnswerResponse:
+      properties:
+        answer:
+          type: string
+          title: Answer
+          description: Synthesized text answer.
+        cards:
+          items:
+            $ref: '#/components/schemas/TakoCard'
+          type: array
+          title: Cards
+          description: Tako cards backing the answer; cards[0] is the lead card — the best one to show alongside the answer.
+        web_results:
+          items:
+            $ref: '#/components/schemas/WebResult'
+          type: array
+          title: Web Results
+        request_id:
+          type: string
+          title: Request Id
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/Usage'
+          - type: 'null'
+      type: object
+      required:
+      - answer
+      - request_id
+      title: AnswerResponse
+      description: 'Response for POST /api/v1/answer: the synthesized answer plus the
+
+        retrieval behind it.'
+    ExportPricing:
+      properties:
+        baseline_usd:
+          type: number
+          title: Baseline Usd
+          description: Flat USD charged once per card export, independent of row count.
+        row_cpm_usd:
+          type: number
+          title: Row Cpm Usd
+          description: USD charged per 1,000 rows on rows beyond the free allowance (free_rows). Card-level total across the card's priced sources; no per-source breakdown.
+        free_rows:
+          type: integer
+          title: Free Rows
+          description: Rows included at the baseline price before the per-1,000-row rate (row_cpm_usd) begins to apply.
+        max_rows_ceiling:
+          type: integer
+          title: Max Rows Ceiling
+          description: Hard cap on rows a single export can return and bill; a larger requested max_rows is clamped to this.
+      type: object
+      required:
+      - baseline_usd
+      - row_cpm_usd
+      - free_rows
+      - max_rows_ceiling
+      title: ExportPricing
+      description: 'Card-CSV export pricing RATE, published so a caller can compute an export''s
+
+        cost before fetching. Full charge =
+
+        baseline_usd + row_cpm_usd * max(0, rows - free_rows) / 1000, rows <= max_rows_ceiling.
+
+        row_cpm_usd is the card-level total (sum of the card''s distinct priced sources''
+
+        per-1,000-row rate); no per-source breakdown.'
+    SourceSettings:
+      properties:
+        count:
+          type: integer
+          maximum: 20.0
+          minimum: 1.0
+          title: Count
+          description: Maximum number of results to return for this source. 1-20.
+          default: 5
+        include_contents:
+          type: boolean
+          title: Include Contents
+          description: Inline this source's underlying data directly in the response. For the Tako data source, that is serialized card data (see content_format). For web results, that is the extracted text.
+          default: false
+      additionalProperties: false
+      type: object
+      title: SourceSettings
+    GraphNodeType:
+      type: string
+      enum:
+      - metric
+      - entity
+      title: GraphNodeType
+    TakoDatasetColumn:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Column name.
+        type:
+          $ref: '#/components/schemas/TakoDatasetColumnType'
+          description: 'Logical column type: ''string'', ''number'', ''boolean'', ''date'', or ''datetime''. Temporal cells are ISO-8601 strings.'
+      type: object
+      required:
+      - name
+      - type
+      title: TakoDatasetColumn
+      description: Typed header entry; `type` is the JSON-facing column type.
+    ContentsRequest:
+      properties:
+        url:
+          type: string
+          title: Url
+          description: The result URL to fetch downloadable content for (a TakoCard.webpage_url or a WebResult.url). A Tako card URL yields a CSV of the card's data; any other URL yields the page's extracted text.
+          examples:
+          - https://tako.com/card/abc123
+        mode:
+          $ref: '#/components/schemas/ContentsDeliveryMode'
+          description: 'Delivery mode. ''url'' (the default) returns a presigned download link. ''inline'' returns the content in the response body: CSV data up to the 2,000-row system ceiling (with total_rows and truncated reported), or web text.'
+          default: url
+        content_format:
+          $ref: '#/components/schemas/ContentsFormat'
+          description: 'Serialization for Tako card data: ''csv'' (default), ''json_records'', or ''json_compact''. Ignored for web URLs (always text).'
+          default: csv
+        max_rows:
+          anyOf:
+          - type: integer
+            minimum: 1.0
+          - type: 'null'
+          title: Max Rows
+          description: Optional cap on the rows returned for a Tako card CSV export. When omitted, it defaults to the free-row allowance (20 rows), billed at the baseline only. Raise it to export more rows, up to the 2,000-row system ceiling (Tako clamps larger values). Rows beyond the free allowance bill at the per-1,000-row rate. Billing counts the rows actually returned. Web URLs ignore this field.
+          examples:
+          - 100
+        quote_only:
+          type: boolean
+          title: Quote Only
+          description: When true, return only the price of the export (cost + export_pricing) without fetching content or charging. The response item's payload and url fields are null, and the request is free. `max_rows` shapes the quote and defaults to the 20-row free allowance, as a real export does. The request ignores `mode` and `content_format`. The same export-safe gate applies, so an unexportable card still returns 403.
+          default: false
+      type: object
+      required:
+      - url
+      title: ContentsRequest
+      description: 'Request body for POST /api/v1/contents.
+
+
+        The caller passes the result URL it wants downloadable content for, and
+
+        the endpoint detects the right content from the URL itself. A Tako card
+
+        URL resolves to the card''s underlying data. Any other URL resolves to
+
+        the page''s extracted full text. `mode` controls delivery: `url` (the
+
+        default) returns a presigned download link, and `inline` returns the
+
+        content in the response. `content_format` selects the card serialization
+
+        (csv, json_records, or json_compact); web URLs ignore it (always
+
+        text).'
+    GraphSearchResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/GraphNode'
+          type: array
+          title: Results
+        inferred_labels:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/NerLabel'
+            type: array
+          - type: 'null'
+          title: Inferred Labels
+          description: Labels that Tako NER inferred from `q` when infer_label ran (boost applied). An empty list means inference ran and found nothing. The field is absent when you supplied an explicit `label`, when infer_label=false, or when there was no q.
+      type: object
+      required:
+      - results
+      title: GraphSearchResponse
+    GraphRelationPage:
+      properties:
+        key:
+          type: string
+          title: Key
+          description: The relation key of this page.
+        kind:
+          $ref: '#/components/schemas/RelationKind'
+        label:
+          type: string
+          title: Label
+          description: Human-readable group label.
+        items:
+          items:
+            $ref: '#/components/schemas/GraphNode'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        total_capped:
+          type: boolean
+          title: Total Capped
+          description: True when `total` hit the server-side fetch cap; the true count is at least `total`. Pagination ends at the cap — narrow with `q` to reach the tail.
+          default: false
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+      type: object
+      required:
+      - key
+      - kind
+      - label
+      - items
+      - total
+      title: GraphRelationPage
+    SearchEffortLevel:
+      type: string
+      enum:
+      - fast
+      - instant
+      - deep
+      title: SearchEffortLevel
+      description: 'Public effort taxonomy for search and answer. FAST is the default.
+
+        INSTANT serves cached embeds without a new data retrieval and works in
+
+        all environments. DEEP widens Tako retrieval and adds an LLM rerank for
+
+        higher-quality results; it is slower and bills at a premium tier.'
+    RelationKind:
+      type: string
+      enum:
+      - related
+      - data
+      - sibling
+      - membership
+      title: RelationKind
+      description: How Tako derived a relation group.
+    UsageData:
+      properties:
+        cost_usd:
+          type: number
+          title: Cost Usd
+          description: USD cost of the inline data delivered in the response.
+        datasets:
+          type: integer
+          title: Datasets
+          description: Number of billed data units (datasets) included in the response.
+      type: object
+      required:
+      - cost_usd
+      - datasets
+      title: UsageData
+      description: 'The cost and quantity of inline data delivered in the response: the
+
+        agent per-dataset surcharge, the search and answer include_contents
+
+        charge, or the contents per-item cost. `datasets` is the count of billed
+
+        data units. Absent when the surface did not or cannot emit inline data
+
+        (for example, the answer agent).'
+    TakoCardSource:
+      properties:
+        source_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Name
+          description: The name of the source
+          examples:
+          - S&P Global
+          - The World Bank
+        source_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Description
+          description: The description of the source
+        source_index:
+          $ref: '#/components/schemas/TakoSourceIndex'
+          description: The index of the source
+          examples:
+          - data
+          - web
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: The URL of the source
+          examples:
+          - https://xignite.com
+        source_text:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Text
+          description: Raw excerpts retrieved from the source page — the unmodified web content that grounded the answer. Present for WEB sources; null for DATA sources.
+      type: object
+      required:
+      - source_index
+      title: TakoCardSource
+      description: 'A source that backs a TakoCard on the SDK surfaces. It uses the
+
+        {data, web} TakoSourceIndex taxonomy.'
+    Usage:
+      properties:
+        total_cost_usd:
+          type: number
+          title: Total Cost Usd
+          description: Total quoted USD cost of this request. Sum of compute cost and data cost.
+        compute:
+          anyOf:
+          - $ref: '#/components/schemas/UsageCompute'
+          - type: 'null'
+          description: Compute cost breakdown. Present only on surfaces with a compute step (absent for contents).
+        data:
+          anyOf:
+          - $ref: '#/components/schemas/UsageData'
+          - type: 'null'
+          description: Inline-data cost breakdown. Present only when the surface emitted billable inline data.
+      type: object
+      required:
+      - total_cost_usd
+      title: Usage
+      description: 'Usage for one metered request. `total_cost_usd` is always present (the
+
+        total quoted charge). `compute` and `data` are the additive breakdown;
+
+        each appears only where it applies. total_cost_usd always equals the sum
+
+        of the components that appear.'
+    UsageCompute:
+      properties:
+        cost_usd:
+          type: number
+          title: Cost Usd
+          description: USD cost of running the operation.
+      type: object
+      required:
+      - cost_usd
+      title: UsageCompute
+      description: 'The cost of running the operation. Absent on surfaces with no compute
+
+        step (contents).'
+    TakoDatasetColumnType:
+      type: string
+      enum:
+      - string
+      - number
+      - boolean
+      - date
+      - datetime
+      title: TakoDatasetColumnType
+      description: 'Logical column type declared in a TakoDataset header. Temporal cells
+
+        are ISO-8601 strings. Each column declares ''date'' or ''datetime'' on its
+
+        own: a temporal column whose non-null values are all timezone-naive
+
+        midnights declares ''date''.'
+    Sources:
+      properties:
+        data:
+          anyOf:
+          - $ref: '#/components/schemas/DataSourceSettings'
+          - type: 'null'
+          description: Tako data source (curated knowledge). The search includes it only if present. Tako accepts the legacy key 'tako' as a synonym.
+        web:
+          anyOf:
+          - $ref: '#/components/schemas/SourceSettings'
+          - type: 'null'
+          description: Web source. The search includes it only if present.
+      additionalProperties: false
+      type: object
+      title: Sources
+      description: 'Per-source settings. The search includes an index only if its field is
+
+        present.
+
+
+        The Tako data source is named `data`. Tako still accepts the legacy key
+
+        `tako` as a synonym and maps it to `data` before validation.'
+    SearchResponse:
+      properties:
+        cards:
+          items:
+            $ref: '#/components/schemas/TakoCard'
+          type: array
+          title: Cards
+        web_results:
+          items:
+            $ref: '#/components/schemas/WebResult'
+          type: array
+          title: Web Results
+        request_id:
+          type: string
+          title: Request Id
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/Usage'
+          - type: 'null'
+      type: object
+      required:
+      - request_id
+      title: SearchResponse
+    SearchRequest:
+      properties:
+        query:
+          type: string
+          title: Query
+          description: Natural language search query.
+          examples:
+          - Intel vs Nvidia headcount since 2013
+        effort:
+          $ref: '#/components/schemas/SearchEffortLevel'
+          description: 'Search effort level: ''fast'' (default), ''instant'', or ''deep''.'
+          default: fast
+        sources:
+          $ref: '#/components/schemas/Sources'
+          description: Per-source settings. The search includes an index only if its key is present. Defaults to {data:{}, web:{}} (data and web, count 5 each). Tako accepts the legacy key 'tako' as a synonym for 'data'.
+        country_code:
+          type: string
+          title: Country Code
+          description: ISO 3166-1 alpha-2 country code for localization.
+          default: US
+        locale:
+          type: string
+          title: Locale
+          description: BCP-47 locale tag for language and formatting.
+          default: en-US
+        timezone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Timezone
+          description: IANA timezone (for example, 'America/New_York').
+        output_settings:
+          anyOf:
+          - $ref: '#/components/schemas/OutputSettings'
+          - type: 'null'
+          description: Settings that control the response shape.
+      additionalProperties: false
+      type: object
+      required:
+      - query
+      title: SearchRequest
+    TakoDatasetSource:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: Human-readable source name (e.g. 'FRED', 'S&P Global').
+        index:
+          type: string
+          enum:
+          - data
+          - web
+          title: Index
+          description: 'Source index the rows came from: ''data'' (Tako) or ''web''.'
+          default: data
+      type: object
+      required:
+      - name
+      title: TakoDatasetSource
+      description: 'Per-dataset provenance entry. `index` names the source index, not a
+
+        citation display number. It is "data" for every dataset today — web
+
+        content never fills a dataset slot.'
+    ComponentConfig:
+      properties:
+        component_type:
+          $ref: '#/components/schemas/ComponentTypeEnum'
+          description: 'Component type:
+
+            - bubble: Bubble chart (scatter plot with size dimension for 3-variable data)
+
+            - categorical_bar: Bar chart with categorical x-axis (for example, regions or products)
+
+            - choropleth: Choropleth map showing geographic data with color intensity by region (US states or world)
+
+            - data_table_chart: Bar chart with auto-generated data table below showing values
+
+            - financial_boxes: Financial metric boxes with values and growth indicators (for example, Revenue or EPS)
+
+            - generic_timeseries: timeseries chart
+
+            - header: Card header with title and description, automatically styled with theme
+
+            - heatmap: 2D heatmap with color intensity representing values (for example, a correlation matrix)
+
+            - histogram: Histogram chart showing frequency distribution of values
+
+            - person_card: Person profile card from an Exa person search result (includes career, education, and about tabs)
+
+            - pie: Pie chart showing proportional data as slices of a circle
+
+            - scatter: Scatter plot showing relationships between two continuous variables
+
+            - table: Data table with configurable columns and rows
+
+            - boxplot: Box plot showing statistical distributions (min, Q1, median, Q3, max)
+
+            - treemap: Treemap chart showing hierarchical data as proportional rectangles
+
+            - waterfall: Waterfall chart showing incremental positive and negative changes (for example, an income statement breakdown)'
+        component_variant:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Component Variant
+          description: Component variant (for example, 'simple' or 'financial').
+        config:
+          additionalProperties: true
+          type: object
+          title: Config
+          description: Component configuration data
+      type: object
+      required:
+      - component_type
+      - config
+      title: ComponentConfig
+      description: Configuration for a single component in a card.
+    NerLabel:
+      type: string
+      enum:
+      - PERSON
+      - ORG
+      - GPE
+      - LOC
+      - PRODUCT
+      - EVENT
+      - LANGUAGE
+      - MONEY
+      - METRIC
+      - STOCK_TICKER
+      - WEBSITE
+      title: NerLabel
+    OutputSettings:
+      properties:
+        image_dark_mode:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Image Dark Mode
+          description: Whether to render card preview images in dark mode.
+        force_refresh:
+          type: boolean
+          title: Force Refresh
+          description: 'Instant mode only, and currently informational: on these endpoints, instant (effort=''instant'') always operates in build-and-refresh mode regardless of this flag. Instant retrieves data for embeds that are missing or stale, then creates or refreshes their static embeds. Embeds that are already fresh (within the refresh cadence) return as-is; Tako does not re-retrieve them. Identical queries therefore reuse the same content-addressed embed and return a stable embed URL.'
+          default: false
+      additionalProperties: false
+      type: object
+      title: OutputSettings
+    APIErrorType:
+      type: string
+      enum:
+      - BAD_REQUEST
+      - AUTHENTICATION_ERROR
+      - INTERNAL_SERVER_ERROR
+      - RELEVANT_RESULTS_NOT_FOUND
+      - RATE_LIMIT_EXCEEDED
+      - PAYMENT_REQUIRED
+      - REQUEST_TIMEOUT
+      - FORBIDDEN
+      - NOT_FOUND
+      - SERVICE_UNAVAILABLE
+      title: APIErrorType
+    ComponentTypeEnum:
+      type: string
+      enum:
+      - categorical_bar
+      - choropleth
+      - data_table_chart
+      - financial_boxes
+      - generic_timeseries
+      - header
+      - heatmap
+      - histogram
+      - marimekko
+      - pie
+      - scatter
+      - table
+      - boxplot
+      - treemap
+      - waterfall
+      - sankey
+      - bubble
+      - person_card
+      - timeline
+      - top_level_metric
+      title: ComponentTypeEnum
+      description: 'Component types supported for thin viz schemas with builder support.
+
+
+        These component types have dedicated builders that process configurations,
+
+        add defaults, and apply theme styling automatically.'
+    TakoDataset:
+      properties:
+        columns:
+          items:
+            $ref: '#/components/schemas/TakoDatasetColumn'
+          type: array
+          title: Columns
+          description: Ordered column headers (name + type), one per position in every row.
+        rows:
+          items:
+            items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: integer
+              - type: boolean
+              - type: 'null'
+            type: array
+          type: array
+          title: Rows
+          description: Row data as positional cell arrays aligned to `columns` order. Cells are string/number/boolean/null; nulls are preserved, never coerced.
+        total_rows:
+          type: integer
+          title: Total Rows
+          description: True total number of rows in the underlying data, before any truncation.
+        truncated:
+          type: boolean
+          title: Truncated
+          description: True when `rows` was capped and total_rows exceeds the number returned.
+        ref:
+          type: string
+          title: Ref
+          description: Source URL the dataset was derived from (e.g. the Tako card URL).
+        sources:
+          items:
+            $ref: '#/components/schemas/TakoDatasetSource'
+          type: array
+          title: Sources
+          description: 'Provenance for the dataset: the sources the rows were drawn from.'
+        provenance:
+          type: string
+          enum:
+          - query
+          - web_extraction
+          title: Provenance
+          description: 'How the rows were produced: ''query'' (Tako data) or ''web_extraction''.'
+          default: query
+      type: object
+      required:
+      - columns
+      - rows
+      - total_rows
+      - truncated
+      - ref
+      - sources
+      title: TakoDataset
+      description: 'The dataset-slot envelope: exact retrieved rows as positional arrays
+
+        in `columns` order. The rows come directly from the data source; the LLM
+
+        never transcribes them.'
+    ThinVizCard:
+      properties:
+        card_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Card Id
+          description: Public ID of the created card.
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+          description: Card title.
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Card description.
+        webpage_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Webpage Url
+          description: Hosted page URL for the card.
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+          description: Static preview image URL for the card.
+        embed_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Embed Url
+          description: Embeddable URL for the card.
+        card_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Card Type
+          description: The card's chart type (for example, 'bar').
+        visualization_data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Visualization Data
+          description: Inline chart config + data for rendering the card.
+          examples:
+          - data:
+            - x: '2013'
+              y: 10000
+            viz_config:
+              title: Revenue
+        embed_mode:
+          anyOf:
+          - type: string
+            enum:
+            - post
+            - postmessage
+          - type: 'null'
+          title: Embed Mode
+          description: 'How Tako delivers the embed: ''postmessage'' for postMessage embeds, and ''post'' otherwise.'
+      type: object
+      title: ThinVizCard
+      description: 'Response for POST /api/v1/thin_viz/create — a created visualization card.
+
+
+        Distinct from KnowledgeCard: thin_viz builds a self-contained chart from
+
+        a caller-supplied component schema, so it never carries retrieval
+
+        provenance (sources, source_indexes) or downloadable raw data. Render the
+
+        card via `embed_url` and preview it via `image_url`.
+
+        `visualization_data` carries the inline chart config and data.
+
+
+        This schema documents the populated subset of the response. The wire
+
+        payload also includes the remaining KnowledgeCard fields (sources,
+
+        source_indexes, methodologies, data_url, and so on) as null.'
+    TakoSourceIndex:
+      type: string
+      enum:
+      - data
+      - web
+      title: TakoSourceIndex
+      description: 'Public source taxonomy for the SDK card surfaces (v3 search, v1 answer,
+
+        agent). It is symmetric with the request taxonomy {data, web}.'
+    GraphRelation:
+      properties:
+        key:
+          type: string
+          title: Key
+          description: 'Stable pagination handle. Fixed keys: metrics, entities, siblings, part_of, members. Named relations: rel:<phrase>.'
+        kind:
+          $ref: '#/components/schemas/RelationKind'
+        label:
+          type: string
+          title: Label
+          description: Human-readable group label.
+        items:
+          items:
+            $ref: '#/components/schemas/GraphNode'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+        total_capped:
+          type: boolean
+          title: Total Capped
+          description: True when `total` hit the server-side fetch cap; the true count is at least `total`. Render as 'total+'.
+          default: false
+      type: object
+      required:
+      - key
+      - kind
+      - label
+      - items
+      - total
+      title: GraphRelation
+    GraphRelatedResponse:
+      properties:
+        node:
+          $ref: '#/components/schemas/GraphNode'
+        relations:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/GraphRelation'
+            type: array
+          - type: 'null'
+          title: Relations
+        relation:
+          anyOf:
+          - $ref: '#/components/schemas/GraphRelationPage'
+          - type: 'null'
+        inferred_labels:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/NerLabel'
+            type: array
+          - type: 'null'
+          title: Inferred Labels
+          description: Labels that Tako NER inferred from `q` when infer_label ran (boost applied). An empty list means inference ran and found nothing. The field is absent when you supplied an explicit `label`, when infer_label=false, or when there was no q.
+      type: object
+      required:
+      - node
+      title: GraphRelatedResponse
+    TakoCard:
+      properties:
+        card_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Card Id
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Title
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        semantic_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Semantic Description
+        webpage_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Webpage Url
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+        embed_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Embed Url
+        sources:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/TakoCardSource'
+            type: array
+          - type: 'null'
+          title: Sources
+        methodologies:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/KnowledgeCardMethodology'
+            type: array
+          - type: 'null'
+          title: Methodologies
+        source_indexes:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/TakoSourceIndex'
+            type: array
+          - type: 'null'
+          title: Source Indexes
+        card_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Card Type
+        relevance:
+          anyOf:
+          - $ref: '#/components/schemas/KnowledgeCardRelevance'
+          - type: 'null'
+        content:
+          anyOf:
+          - $ref: '#/components/schemas/ResultContent'
+          - type: 'null'
+        relevance_score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Relevance Score
+          description: Numeric relevance of this card to the query on a 1.0-5.0 scale (5.0 = exact match; higher is more relevant). Only populated for entitled accounts; null otherwise.
+        nodes:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/TakoCardNode'
+            type: array
+          - type: 'null'
+          title: Nodes
+          description: Graph nodes (entities and metrics) behind this card. The response includes them by default. Absent for web-only cards or when node resolution was not available. Use each id with /beta/graph/node/{id} for full detail (aliases, subtype), or pass ids in sources.data.node_ids to pin these nodes in future searches.
+        metric_definitions:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/MetricDefinition'
+            type: array
+          - type: 'null'
+          title: Metric Definitions
+          description: Definitions of the metrics this card displays (name + definition). Null when no displayed metric has a definition available.
+        data_freshness:
+          anyOf:
+          - $ref: '#/components/schemas/DataFreshness'
+          - type: 'null'
+          description: 'Freshness dates for the card''s data: the coverage date (data_as_of) and the last refresh date (last_updated). Null when neither date is available.'
+      type: object
+      title: TakoCard
+      description: 'A Tako knowledge card on the search and answer surfaces. It carries a
+
+        `content` download descriptor.'
+    BaseAPIError:
+      properties:
+        error_message:
+          type: string
+          title: Error Message
+        error_type:
+          $ref: '#/components/schemas/APIErrorType'
+      type: object
+      required:
+      - error_message
+      - error_type
+      title: BaseAPIError
+    DataFreshness:
+      properties:
+        data_as_of:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Data As Of
+          description: Date of the most recent observation in the card's data, as an ISO date (YYYY-MM-DD). Null for card types without a coverage date.
+          examples:
+          - '2026-06-30'
+        last_updated:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Updated
+          description: Date Tako last refreshed the underlying data, as an ISO date (YYYY-MM-DD).
+          examples:
+          - '2026-07-14'
+      type: object
+      title: DataFreshness
+      description: 'When the card''s data was last observed and last refreshed. Either field
+
+        may be null when that date isn''t available for the card type.'
+    ResultContent:
+      properties:
+        content_format:
+          anyOf:
+          - $ref: '#/components/schemas/ContentsFormat'
+          - type: 'null'
+          description: 'Serialization of the returned card data: ''csv'', ''json_records'', or ''json_compact''. Null for web text (always returned as raw text) and for a quote-only response (nothing was serialized).'
+        cost:
+          type: number
+          title: Cost
+          description: Price of this item in USD. On a /contents response this is the amount actually billed; on a quote_only response or a search/answer downloadable card it is a prospective /contents export price (nothing was fetched or billed). Pair with export_pricing to compute a larger export's cost before fetching.
+          default: 0.0
+        data:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Data
+          description: 'Inline payload as text: card data serialized to CSV, or a web page''s extracted text. Set only for the ''csv'' card format and for web text; null otherwise.'
+        records:
+          anyOf:
+          - items:
+              additionalProperties:
+                anyOf:
+                - type: string
+                - type: number
+                - type: integer
+                - type: boolean
+                - type: 'null'
+              type: object
+            type: array
+          - type: 'null'
+          title: Records
+          description: 'Inline card data as verbose JSON: a list of row objects keyed by column name. Set only when content_format is ''json_records''.'
+        dataset:
+          anyOf:
+          - $ref: '#/components/schemas/TakoDataset'
+          - type: 'null'
+          description: Inline card data as a compact TakoDataset (typed column headers plus positional row arrays). Set only when content_format is 'json_compact'.
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: Presigned download URL for the content, returned in 'url' delivery mode. Null for inline delivery and for quotes; pair with expires_at.
+        expires_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expires At
+          description: ISO-8601 timestamp after which the presigned url stops working. Null whenever url is null.
+        total_rows:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Rows
+          description: True total number of rows in the card's data, independent of how many rows were returned. Compare with truncated to tell whether more rows are available via a larger max_rows. Null for web text.
+        truncated:
+          type: boolean
+          title: Truncated
+          description: True when the returned rows were capped (by the request's max_rows or the 2,000-row system ceiling) and total_rows exceeds the number returned.
+          default: false
+        export_pricing:
+          anyOf:
+          - $ref: '#/components/schemas/ExportPricing'
+          - type: 'null'
+          description: Rate card for a downloadable card CSV, so a caller can compute a full export's cost before fetching. Null for web text and other non-downloadable content.
+      type: object
+      title: ResultContent
+      description: 'Describes the downloadable content behind a result.
+
+
+        Pricing: for a Tako card CSV export, the charge is a flat per-export
+
+        baseline plus a per-source, per-row CPM on the rows returned beyond the
+
+        free-row allowance. Web text bills at the standard Contents rate.
+
+
+        The meaning of `cost` depends on the surface. On `/contents` responses,
+
+        `cost` is the actual charge, and it reconciles with what that response
+
+        billed. The exception is a `quote_only` response, where `cost` is a
+
+        prospective price: Tako neither fetched nor billed the export, and the
+
+        payload and url fields are null. On search and answer downloadable
+
+        cards, `cost` is a prospective `/contents` quote (the per-export
+
+        baseline floor), not what this response billed. On a metered
+
+        `include_contents` request, the per-card `cost` therefore diverges from
+
+        `usage.total_cost_usd` (the inline preview bills about $0), and the sum
+
+        of per-card `cost` will not reconcile with `usage`. Treat `cost` plus
+
+        `export_pricing` as the price of a `/contents` export of this card.
+
+
+        `export_pricing` carries the rate so that a caller can compute the full
+
+        charge before fetching: baseline_usd + row_cpm_usd * max(0, rows -
+
+        free_rows) / 1000, with rows <= max_rows_ceiling. `export_pricing` is
+
+        null for web text and non-downloadable content.
+
+
+        Tako populates exactly one payload group once it delivers contents:
+
+        `data` (CSV or web text), `records` (verbose JSON), `dataset` (compact
+
+        TakoDataset), or `url` plus `expires_at` (presigned download).
+
+        `content_format` names the serialization; it is null for web text and
+
+        for an undelivered quote. When every payload field is unset, this is
+
+        just the quote (`cost`); fetch the content later via the Contents
+
+        endpoint.'
+    MetricDefinition:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: The metric's display name
+          examples:
+          - Gross Domestic Product (current US$)
+        definition:
+          type: string
+          title: Definition
+          description: Human-readable definition of the metric
+      type: object
+      required:
+      - name
+      - definition
+      title: MetricDefinition
+      description: 'Definition of a metric shown on a card. Sourced from the metric''s
+
+        ValueType definition — the same text as the in-app methodology ''Metrics''
+
+        tab.'
+    EntityClassName:
+      type: string
+      enum:
+      - Companies
+      - Cryptocurrencies
+      - Financial Instruments
+      - Internet Browsers
+      - Commodities
+      - People
+      - Currencies
+      - Stock Exchanges
+      - Securities
+      - IPOs
+      - Government Debt Instruments
+      - Treasury Securities
+      - Airports
+      - Airlines
+      - Vehicle Types
+      - Transportation Modes
+      - Drugs
+      - Drug Categories
+      - Diseases
+      - Chemical Elements
+      - Chemical Compounds
+      - Celestial Bodies
+      - Occupations
+      - Social Media Platforms
+      - Operating Systems
+      - Search Engines
+      - Device Types
+      - LLMs
+      - LLM Families
+      - LLM Benchmarks
+      - Industries
+      - NAICS Industries
+      - BLS Industries
+      - PSC Categories
+      - Federal Contractors
+      - Federal Agencies
+      - Federal Subagencies
+      - ICE Contracts
+      - ICE Contractors
+      - Elections
+      - Political Offices
+      - Pollsters
+      - Agricultural Products
+      - Tobacco Products
+      - Prediction Markets
+      - Prediction Events
+      - Real Estate Property Types
+      - Continents
+      - World Regions
+      - Countries
+      - States
+      - Counties
+      - Metro Areas
+      - Cities
+      - F1 Drivers
+      - F1 Teams
+      - F1 Circuits
+      - F1 Events
+      - NASCAR Drivers
+      - NASCAR Teams
+      - NASCAR Tracks
+      - NASCAR Events
+      - NASCAR Races
+      - NASCAR Owners
+      - NASCAR Manufacturers
+      - Soccer Teams
+      - Soccer Players
+      - Soccer Competitions
+      - Soccer Conferences
+      - Basketball Teams
+      - Basketball Players
+      - Basketball Conferences
+      - Basketball Divisions
+      - Baseball Teams
+      - Baseball Players
+      - Baseball Conferences
+      - Baseball Divisions
+      - Baseball Competitions
+      - Football Teams
+      - Football Players
+      - Football Conferences
+      - Football Divisions
+      - Sports
+      - Sports Leagues
+      title: EntityClassName
+    GraphNode:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Opaque, human-friendly public id (<name-slug>-<token>).
+        type:
+          $ref: '#/components/schemas/GraphNodeType'
+        name:
+          type: string
+          title: Name
+        aliases:
+          items:
+            type: string
+          type: array
+          title: Aliases
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        subtype:
+          anyOf:
+          - $ref: '#/components/schemas/EntityClassName'
+          - type: 'null'
+        label:
+          anyOf:
+          - $ref: '#/components/schemas/NerLabel'
+          - type: 'null'
+          description: Public NER label of the node (PERSON, ORG, GPE, ...). Derived from the node's stored annotation; null when the internal annotation has no public equivalent.
+      type: object
+      required:
+      - id
+      - type
+      - name
+      title: GraphNode
+    KnowledgeCardRelevance:
+      type: string
+      enum:
+      - High
+      - Medium
+      - Low
+      title: KnowledgeCardRelevance
+    ContentItem:
+      properties:
+        content_format:
+          anyOf:
+          - $ref: '#/components/schemas/ContentsFormat'
+          - type: 'null'
+          description: 'Serialization of the returned card data: ''csv'', ''json_records'', or ''json_compact''. Null for web text (always returned as raw text) and for a quote-only response (nothing was serialized).'
+        cost:
+          type: number
+          title: Cost
+          description: Price of this item in USD. On a /contents response this is the amount actually billed; on a quote_only response or a search/answer downloadable card it is a prospective /contents export price (nothing was fetched or billed). Pair with export_pricing to compute a larger export's cost before fetching.
+          default: 0.0
+        data:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Data
+          description: 'Inline payload as text: card data serialized to CSV, or a web page''s extracted text. Set only for the ''csv'' card format and for web text; null otherwise.'
+        records:
+          anyOf:
+          - items:
+              additionalProperties:
+                anyOf:
+                - type: string
+                - type: number
+                - type: integer
+                - type: boolean
+                - type: 'null'
+              type: object
+            type: array
+          - type: 'null'
+          title: Records
+          description: 'Inline card data as verbose JSON: a list of row objects keyed by column name. Set only when content_format is ''json_records''.'
+        dataset:
+          anyOf:
+          - $ref: '#/components/schemas/TakoDataset'
+          - type: 'null'
+          description: Inline card data as a compact TakoDataset (typed column headers plus positional row arrays). Set only when content_format is 'json_compact'.
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: Presigned download URL for the content, returned in 'url' delivery mode. Null for inline delivery and for quotes; pair with expires_at.
+        expires_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Expires At
+          description: ISO-8601 timestamp after which the presigned url stops working. Null whenever url is null.
+        total_rows:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Rows
+          description: True total number of rows in the card's data, independent of how many rows were returned. Compare with truncated to tell whether more rows are available via a larger max_rows. Null for web text.
+        truncated:
+          type: boolean
+          title: Truncated
+          description: True when the returned rows were capped (by the request's max_rows or the 2,000-row system ceiling) and total_rows exceeds the number returned.
+          default: false
+        export_pricing:
+          anyOf:
+          - $ref: '#/components/schemas/ExportPricing'
+          - type: 'null'
+          description: Rate card for a downloadable card CSV, so a caller can compute a full export's cost before fetching. Null for web text and other non-downloadable content.
+        source_url:
+          type: string
+          title: Source Url
+          description: The originating result URL from the request.
+      type: object
+      required:
+      - source_url
+      title: ContentItem
+      description: 'A single downloadable artifact.
+
+
+        It inherits `content_format`, `cost`, the payload fields (`data`,
+
+        `records`, `dataset`, `total_rows`, `truncated`), and the presigned `url`
+
+        and `expires_at` from ResultContent. URL mode populates `url` and
+
+        `expires_at`. INLINE mode populates one of the payload fields and leaves
+
+        `url` and `expires_at` null. A `quote_only` request yields a third shape:
+
+        `cost` (plus `export_pricing` for a card) with every payload and url
+
+        field null and `content_format` null — the price of the export, with
+
+        nothing fetched or charged.'
+    ContentsDeliveryMode:
+      type: string
+      enum:
+      - url
+      - inline
+      title: ContentsDeliveryMode
+      description: 'How contents reach the caller. URL returns a short-lived presigned file
+
+        download; INLINE returns the content in the response body.'
+    TakoCardNode:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Opaque, human-friendly public id (<name-slug>-<token>).
+        type:
+          $ref: '#/components/schemas/GraphNodeType'
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+      type: object
+      required:
+      - id
+      - type
+      - name
+      title: TakoCardNode
+      description: 'Slim graph node for the search and answer card surface
+
+        (TakoCard.nodes). It is deliberately narrower than GraphNode: it carries
+
+        no `aliases` and no `subtype`. Callers that need the full node resolve
+
+        the id via /beta/graph/node/{id}.'
+    ContentsResponse:
+      properties:
+        contents:
+          items:
+            $ref: '#/components/schemas/ContentItem'
+          type: array
+          title: Contents
+          description: Downloadable artifacts for the requested URL.
+        request_id:
+          type: string
+          title: Request Id
+          description: Unique identifier for this request.
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/Usage'
+          - type: 'null'
+      type: object
+      required:
+      - request_id
+      title: ContentsResponse
+      description: 'Response for POST /api/v1/contents.
+
+
+        `contents` is a list so that the contract stays stable if a single result
+
+        ever yields multiple artifacts. Today it always carries exactly one
+
+        item.'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: X-API-Key
+      in: header
