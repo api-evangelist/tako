@@ -1,0 +1,70 @@
+# Tako Docs
+
+> Tako serves live financial, macroeconomic, and company data as source-grounded answers, structured knowledge cards, and embeddable charts. Build with four core APIs — Agent, Answer, Search, and Contents — plus Thin-Viz for your own data, all over real-time data with citations.
+
+## Start here
+
+- [Quickstart](https://docs.tako.com/documentation/getting-started/quickstart.md): Get an API key and make your first request in cURL, Python, or TypeScript.
+- [What is Tako?](https://docs.tako.com/documentation/getting-started/what-is-tako/overview.md): What Tako is and when to reach for it.
+- [Knowledge cards](https://docs.tako.com/documentation/getting-started/what-is-tako/knowledge-cards.md): The card object Tako returns and embeds.
+- [Data sources](https://docs.tako.com/documentation/getting-started/what-is-tako/data-sources.md): Where Tako's data comes from and how fresh it is.
+
+## Build with Tako — pick the right API
+
+Each surface has a narrative Overview and a copy-paste "For Coding Agent" reference (endpoints, request/response shapes, cURL/Python/TypeScript). Agents building an integration should start from the For-Coding-Agent page.
+
+- **Agent** — token-efficient deep research; dispatch a long-running run, then poll or stream results.
+  - [Overview](https://docs.tako.com/documentation/integrating-tako/agent/overview.md) · [For Coding Agent](https://docs.tako.com/documentation/integrating-tako/agent/for-coding-agent.md): dispatch → poll/stream, run + result shapes.
+- **Answer** — one written, cited answer in a single call.
+  - [Overview](https://docs.tako.com/documentation/integrating-tako/answer/overview.md) · [For Coding Agent](https://docs.tako.com/documentation/integrating-tako/answer/for-coding-agent.md): `POST /api/v1/answer`, grounded answer + cards + web results.
+- **Search** — fast structured knowledge cards, no LLM in the loop.
+  - [Overview](https://docs.tako.com/documentation/integrating-tako/search/overview.md) · [For Coding Agent](https://docs.tako.com/documentation/integrating-tako/search/for-coding-agent.md): `POST /api/v3/search`, cards + web results.
+- **Data Graph** — discover what data Tako has before you search; resolve names to nodes, explore relationships, pin node ids into Search. No credits consumed.
+  - [Overview](https://docs.tako.com/documentation/integrating-tako/data-graph/overview.md) · [For Coding Agent](https://docs.tako.com/documentation/integrating-tako/data-graph/for-coding-agent.md): `GET /beta/graph/search` + `GET /beta/graph/related`, then `/v3/search` with `sources.data.node_ids`. Installable skill: see "Installable skill" below.
+- **Contents** — the exact numbers behind an answer or card, as CSV.
+  - [Overview](https://docs.tako.com/documentation/integrating-tako/contents/overview.md) · [For Coding Agent](https://docs.tako.com/documentation/integrating-tako/contents/for-coding-agent.md): `POST /api/v1/contents`, download CSV / extracted text.
+- **Thin-Viz** — turn your own data into embeddable Tako cards.
+  - [Overview](https://docs.tako.com/documentation/integrating-tako/chart-creation/overview.md) · [For Coding Agent](https://docs.tako.com/documentation/integrating-tako/chart-creation/for-coding-agent.md): `POST /api/v1/thin_viz/create/`.
+- [Embedding knowledge cards](https://docs.tako.com/documentation/integrating-tako/embedding-knowledge-cards.md): Drop live Tako cards into a web page.
+
+## Installable skill — tako-graph-agent
+
+Building an agentic application that integrates Tako Search? Install the ready-made skill instead of wiring the workflow yourself. It teaches a coding agent the full graph-grounded loop: resolve names to Data Graph nodes, read what data exists, compose pinned `/v3/search` queries, and report coverage gaps honestly.
+
+Each file is hosted as a docs page whose first fenced code block is the complete file. Fetch these two pages and save the fenced content into your agent's skills directory:
+
+1. [SKILL.md](https://docs.tako.com/skills/tako-graph-agent.md) → first code block, save to `.claude/skills/tako-graph-agent/SKILL.md`
+2. [resolve-example.ts](https://docs.tako.com/skills/tako-graph-agent/resolve-example.md) → first code block, save to `.claude/skills/tako-graph-agent/resolve-example.ts` (runnable reference implementation: resolution loop, compose guards, cohort enumeration)
+
+One-command install (extracts the first fenced block of each page):
+
+```
+mkdir -p .claude/skills/tako-graph-agent && \
+  curl -fsSL https://docs.tako.com/skills/tako-graph-agent.md \
+    | sed -n '/^```/,/^```/p' | sed '1d;$d' > .claude/skills/tako-graph-agent/SKILL.md && \
+  curl -fsSL https://docs.tako.com/skills/tako-graph-agent/resolve-example.md \
+    | sed -n '/^```/,/^```/p' | sed '1d;$d' > .claude/skills/tako-graph-agent/resolve-example.ts
+```
+
+## API Reference
+
+- [Search v3](https://docs.tako.com/api-reference/search-v3.md) · [Answer](https://docs.tako.com/api-reference/answer.md) · [Contents](https://docs.tako.com/api-reference/contents.md)
+- [Graph search](https://docs.tako.com/api-reference/graph-search.md) · [Graph related](https://docs.tako.com/api-reference/graph-related.md) · [Graph node](https://docs.tako.com/api-reference/graph-node.md)
+- [Agent dispatch](https://docs.tako.com/api-reference/agent-dispatch.md) · [Agent poll](https://docs.tako.com/api-reference/agent-poll.md)
+- [Thin-Viz create](https://docs.tako.com/api-reference/thinviz-direct-create.md)
+
+## Integrations
+
+- [MCP server](https://docs.tako.com/documentation/integrations/mcp-server.md): Connect Tako to any MCP client.
+- Agent Skills: [Visualize your data](https://docs.tako.com/documentation/integrations/agent-skills/visualize-your-data.md) · [Answer with data](https://docs.tako.com/documentation/integrations/agent-skills/answer-with-data.md) · [Search visualizations](https://docs.tako.com/documentation/integrations/agent-skills/search-visualizations.md)
+- [OpenAI-compatible API](https://docs.tako.com/documentation/integrations/openai-compatible-api.md) · [OpenAI tool calling](https://docs.tako.com/documentation/integrations/openai-tool-calling.md) · [OpenAI Responses API](https://docs.tako.com/documentation/integrations/openai-responses-api.md)
+- [Anthropic tool calling](https://docs.tako.com/documentation/integrations/anthropic-tool-calling.md) · [Vercel AI SDK](https://docs.tako.com/documentation/integrations/vercel-ai-sdk.md)
+- [Machine payments](https://docs.tako.com/documentation/integrations/machine-payments.md): Agent/machine payment flows.
+
+## Additional Resources
+
+- [Credits & billing](https://docs.tako.com/documentation/additional-resources/credits-and-billing.md)
+
+## OpenAPI Spec
+
+- [OpenAPI](https://docs.tako.com/api-reference/openapi.yaml)

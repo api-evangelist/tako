@@ -1,0 +1,109 @@
+generated: '2026-07-21'
+method: generated
+source: openapi/tako-openapi-original.yml
+audience: null
+note: >-
+  Recommended x-agentic-access execution contracts, classified per operation from
+  the Tako OpenAPI (Curity Access Intelligence model). GET/HEAD → connected/read;
+  write-method POSTs → acting/write. No operation is payment/transfer/safety-critical
+  at the API-operation level (Tako's machine-payments surface is billing metadata,
+  not a transfer endpoint). A governance starting point, not an authoritative
+  provider claim.
+summary:
+  operations: 13
+  by_action_class:
+    connected: 7
+    acting: 6
+  by_consequence:
+    read: 7
+    write: 6
+  human_in_the_loop: 0
+  audit_required: 6
+operations:
+  - operationId: graphSearch
+    method: GET
+    path: /beta/graph/search
+    action_class: connected
+    consequence: read
+    token: {ttl_seconds: 3600}
+  - operationId: graphRelated
+    method: GET
+    path: /beta/graph/related
+    action_class: connected
+    consequence: read
+    token: {ttl_seconds: 3600}
+  - operationId: graphNode
+    method: GET
+    path: /beta/graph/node/{id}
+    action_class: connected
+    consequence: read
+    token: {ttl_seconds: 3600}
+  - operationId: listAnswerAgentRuns
+    method: GET
+    path: /v1/agent/answer/runs
+    action_class: connected
+    consequence: read
+    token: {ttl_seconds: 3600}
+  - operationId: getAnswerAgentRun
+    method: GET
+    path: /v1/agent/answer/runs/{run_id}
+    action_class: connected
+    consequence: read
+    token: {ttl_seconds: 3600}
+  - operationId: listRetrievalAgentRuns
+    method: GET
+    path: /v1/agent/retrieval/runs
+    action_class: connected
+    consequence: read
+    token: {ttl_seconds: 3600}
+  - operationId: getRetrievalAgentRun
+    method: GET
+    path: /v1/agent/retrieval/runs/{run_id}
+    action_class: connected
+    consequence: read
+    token: {ttl_seconds: 3600}
+  - operationId: search
+    method: POST
+    path: /v3/search
+    action_class: acting
+    consequence: write
+    token: {ttl_seconds: 900}
+    audit: required
+  - operationId: answer
+    method: POST
+    path: /v1/answer
+    action_class: acting
+    consequence: write
+    token: {ttl_seconds: 900}
+    audit: required
+  - operationId: contents
+    method: POST
+    path: /v1/contents
+    action_class: acting
+    consequence: write
+    token: {ttl_seconds: 900}
+    audit: required
+    note: Meters/bills a card CSV export beyond the free row allowance.
+  - operationId: createCard
+    method: POST
+    path: /v1/thin_viz/create/
+    action_class: acting
+    consequence: write
+    token: {ttl_seconds: 900}
+    audit: required
+  - operationId: createAnswerAgentRun
+    method: POST
+    path: /v1/agent/answer/runs
+    action_class: acting
+    consequence: write
+    token: {ttl_seconds: 900}
+    audit: required
+    note: PAYMENT_REQUIRED (402) pre-dispatch credit gate.
+  - operationId: createRetrievalAgentRun
+    method: POST
+    path: /v1/agent/retrieval/runs
+    action_class: acting
+    consequence: write
+    token: {ttl_seconds: 900}
+    audit: required
+    note: PAYMENT_REQUIRED (402) pre-dispatch credit gate.

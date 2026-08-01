@@ -1,0 +1,59 @@
+generated: '2026-07-21'
+method: searched
+source: openapi/tako-openapi-original.yml
+docs: https://docs.tako.com/documentation/integrating-tako/agent/for-coding-agent
+authentication:
+  style: api-key-header
+  header: X-API-Key
+  ref: authentication/tako-authentication.yml
+idempotency:
+  supported: false
+  notes: >-
+    Tako publishes no idempotency-key header. Read-style POSTs (search, answer,
+    contents) are safe to retry. Agent-run dispatch uses thread_id + a 409
+    conflict guard ('conflict' when a thread already has a run in flight) rather
+    than an idempotency key, so a naive retry of a dispatch can 409 instead of
+    deduplicating.
+pagination:
+  style: cursor
+  request_params: [cursor, limit]
+  response_fields: [data, has_more, next_cursor]
+  defaults: {limit_default: 20, limit_max: 100}
+  applies_to: [listAnswerAgentRuns, listRetrievalAgentRuns]
+  graph_pagination:
+    style: cursor
+    request_params: [cursor, limit]
+    applies_to: [graphRelated]
+    notes: graphSearch uses limit (default 20, max 50); graphRelated uses cursor+limit (default 50, max 100).
+request_tracing:
+  request_id: true
+  field: request_id
+  notes: search/answer/contents responses carry a request_id; agent results carry request_id in AnswerAgentResult.
+streaming:
+  protocol: SSE
+  accept: text/event-stream
+  envelope: AnswerAgentStreamEnvelope / RetrievalAgentStreamEnvelope
+  resume: {header: Last-Event-ID, param: starting_after}
+  terminal_event: stream_done
+  applies_to: [createAnswerAgentRun, getAnswerAgentRun, createRetrievalAgentRun, getRetrievalAgentRun]
+async_jobs:
+  pattern: dispatch-then-poll
+  dispatch_status: 202
+  poll_until: [completed, failed]
+  thread_continuation: thread_id
+error_envelope:
+  ref: errors/tako-problem-types.yml
+  primary: {name: BaseAPIError, fields: [error_message, error_type]}
+  agent: {name: ErrorObject, fields: [code, message]}
+  format: custom-json
+  rfc9457: false
+rate_limit_signaling:
+  ref: rate-limits/tako-rate-limits.yml
+  on_429: back off with jittered exponential retry
+versioning:
+  scheme: uri-path
+  notes: Per-endpoint path versioning — /api/v3/search, /api/v1/answer, /api/v1/contents, /beta/graph/* (beta).
+billing:
+  model: credits / pay-as-you-go
+  free_allowance: graph endpoints consume no credits; first 20 rows of a card export are free
+  docs: https://docs.tako.com/documentation/additional-resources/credits-and-billing

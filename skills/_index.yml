@@ -1,0 +1,23 @@
+generated: '2026-07-21'
+method: searched
+source: https://docs.tako.com/skills/tako-graph-agent.md
+skills:
+  - file: tako-graph-agent.md
+    name: Graph-grounded Tako search
+    description: Resolve names to Data Graph nodes, discover what data exists, compose pinned /v3/search queries, report coverage gaps honestly.
+    api: openapi/tako-openapi-original.yml
+    operations: [graphSearch, graphRelated, graphNode, search]
+    method: searched
+    source: https://docs.tako.com/skills/tako-graph-agent.md
+  - file: tako-answer-with-data.md
+    name: Answer a data question with Tako
+    description: Get one cited, synthesized answer grounded in Tako cards and web results, then export the numbers behind a card as CSV.
+    api: openapi/tako-openapi-original.yml
+    operations: [answer, search, contents]
+    method: generated
+  - file: tako-agent-deep-research.md
+    name: Run a Tako research agent
+    description: Dispatch a long-running answer or retrieval agent run, then poll or stream via SSE to the cited result.
+    api: openapi/tako-openapi-original.yml
+    operations: [createAnswerAgentRun, getAnswerAgentRun, listAnswerAgentRuns, createRetrievalAgentRun, getRetrievalAgentRun, listRetrievalAgentRuns]
+    method: generated

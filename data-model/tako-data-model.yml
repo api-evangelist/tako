@@ -1,0 +1,89 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/tako-openapi-original.yml
+notes: >-
+  Entity graph derived from OpenAPI component schemas ($ref links and id-reference
+  fields). Tako is a read/search API over live data — the durable resources are
+  agent runs/threads; cards, datasets, and citations are response value objects.
+entities:
+  - name: TakoCard
+    kind: value-object
+    description: A knowledge-card chart (the unit Tako returns and embeds).
+    key_fields: [webpage_url, embed_url]
+  - name: TakoDataset
+    kind: value-object
+    description: Exact retrieved rows as typed columns + positional row arrays behind a card.
+    key_fields: [columns, rows, total_rows, sources]
+  - name: SearchResponse
+    kind: response
+    relationships:
+      - has_many: TakoCard
+        via: cards
+      - has_many: WebResult
+        via: web_results
+  - name: AnswerResponse
+    kind: response
+    relationships:
+      - has_many: TakoCard
+        via: cards
+      - has_many: WebResult
+        via: web_results
+      - has_one: Usage
+        via: usage
+  - name: ContentsResponse
+    kind: response
+    relationships:
+      - has_many: ContentItem
+        via: contents
+  - name: ContentItem
+    relationships:
+      - has_one: TakoDataset
+        via: dataset
+      - has_one: ExportPricing
+        via: export_pricing
+  - name: AnswerAgentRun
+    kind: resource
+    id_field: run_id
+    relationships:
+      - belongs_to: Thread
+        via: thread_id
+      - has_one: AnswerAgentResult
+        via: result
+      - has_one: Usage
+        via: usage
+      - has_one: ErrorObject
+        via: error
+  - name: AnswerAgentResult
+    relationships:
+      - has_many: TakoCard
+        via: cards
+      - has_many: AgentAnswerCitation
+        via: citations
+  - name: RetrievalAgentRun
+    kind: resource
+    id_field: run_id
+    relationships:
+      - belongs_to: Thread
+        via: thread_id
+      - has_one: Usage
+        via: usage
+  - name: GraphNode
+    kind: resource
+    id_field: id
+    description: A data-graph node (entity or metric); id form <name-slug>-<token>.
+    relationships:
+      - has_many: GraphNode
+        via: related (rel:*, metrics, entities, siblings, members)
+  - name: AgentAnswerCitation
+    kind: value-object
+    relationships:
+      - has_one: ResultContent
+        via: content
+id_conventions:
+  - entity: GraphNode
+    id_format: "<name-slug>-<token>"
+    note: opaque, not durable across knowledge-graph rebuilds
+  - entity: AgentRun
+    id_field: run_id
+  - entity: Thread
+    id_field: thread_id (uuid)

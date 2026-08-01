@@ -1,0 +1,33 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://tako.com/",
+      "service-doc": [
+        {
+          "href": "https://docs.tako.com/",
+          "type": "text/html",
+          "title": "Tako API Documentation"
+        }
+      ],
+      "service-desc": [
+        {
+          "href": "https://tako.com/openapi.json",
+          "type": "application/openapi+json",
+          "title": "Tako OpenAPI (with x-payment-info / MPP metadata)"
+        }
+      ],
+      "service-meta": [
+        {
+          "href": "https://tako.com/.well-known/mpp.json",
+          "type": "application/json",
+          "title": "Machine Payments (MPP) manifest"
+        },
+        {
+          "href": "https://tako.com/.well-known/agent.md",
+          "type": "text/markdown",
+          "title": "Agent usage guide"
+        }
+      ]
+    }
+  ]
+}

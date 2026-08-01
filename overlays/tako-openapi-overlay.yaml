@@ -1,0 +1,28 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Tako Knowledge Search API
+  version: 1.0.0
+extends: openapi/tako-openapi-original.yml
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-provider: tako
+      x-apievangelist-enriched: '2026-07-21'
+      x-authentication: API key in X-API-Key header (create at tako.com/console/api-keys)
+      x-mcp-server: https://mcp.tako.com/mcp
+      x-docs: https://docs.tako.com
+      x-llms-txt: https://docs.tako.com/llms.txt
+  - target: $.info
+    update:
+      x-agent-readiness:
+        note: >-
+          Publishes OpenAPI 3.1, an official hosted MCP server, an installable
+          Agent Skill (tako-graph-agent), llms.txt, and typed error envelopes.
+          No idempotency-key header; async agent runs use dispatch-then-poll with
+          thread_id + 409 conflict guard.
+  - target: $.tags
+    update:
+      - name: tako
+        description: Core knowledge search, answer, contents, graph, and thin-viz operations.
+      - name: agent
+        description: Asynchronous answer/retrieval agent runs (dispatch, poll, stream, list).

@@ -1,0 +1,34 @@
+generated: '2026-07-21'
+method: searched
+host: https://tako.com
+documents:
+  - path: /.well-known/api-catalog
+    status: 200
+    type: application/linkset+json
+    file: tako-api-catalog.json
+    note: RFC 9727 linkset; points to docs, a payment-aware OpenAPI, an MPP manifest, and an agent guide.
+  - path: /.well-known/mpp.json
+    status: 200
+    type: application/json
+    file: tako-mpp.json
+    note: Machine Payments Protocol manifest — per-request pricing, data domains, provider info.
+  - path: /.well-known/agent.md
+    status: 200
+    type: text/markdown
+    file: tako-agent.md
+    note: Agent usage guide — endpoint chooser, MPP pricing table, data-domain coverage.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+referenced_by_catalog:
+  - href: https://tako.com/openapi.json
+    type: application/openapi+json
+    title: Tako OpenAPI (with x-payment-info / MPP metadata)
+  - href: https://docs.tako.com/api-reference/openapi.yaml
+    type: application/yaml
+    title: Tako OpenAPI 3.1.0 (captured to openapi/tako-openapi-original.yml)

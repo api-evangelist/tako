@@ -1,0 +1,26 @@
+generated: '2026-07-21'
+method: searched
+source: https://docs.tako.com/documentation/integrating-tako/embedding-knowledge-cards
+notes: >-
+  Tako's client-side surface is its embeddable knowledge cards — live,
+  interactive charts dropped into a web page as iframes. Cards report their own
+  height to the parent page via a postMessage 'tako::resize' event, so the host
+  never hard-codes heights. Thin-Viz turns a caller's own data into the same
+  embeddable card format.
+components:
+  - family: knowledge-cards
+    type: embeddable-iframe
+    description: >-
+      Live Tako knowledge-card charts embedded via each card's embed_url as an
+      iframe. Interactive, source-cited, auto-sizing (tako::resize postMessage).
+    docs: https://docs.tako.com/documentation/integrating-tako/embedding-knowledge-cards
+    render_field: embed_url (TakoCard)
+  - family: thin-viz
+    type: create-and-embed
+    description: >-
+      Turn your own data into an embeddable Tako card via POST /api/v1/thin_viz/create/.
+      Supports header, generic_timeseries, categorical_bar, stock_boxes,
+      financial_boxes, table, and more component types; postMessage embed mode
+      injects visualization_data after load.
+    docs: https://docs.tako.com/documentation/integrating-tako/chart-creation/overview
+    source_operation: openapi/tako-openapi-original.yml#createCard

@@ -1,0 +1,87 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/tako-openapi-original.yml
+format: custom-json
+notes: >-
+  Tako does NOT use RFC 9457 application/problem+json. Two error envelopes are in
+  use. The core data endpoints (search, answer, contents, thin_viz) return
+  BaseAPIError { error_message: string, error_type: APIErrorType-enum }. The agent
+  endpoints return ErrorObject { code: string, message: string }. The
+  thin_viz/create endpoint returns a bare { error: string } on 400/404/500.
+error_envelopes:
+  - name: BaseAPIError
+    fields: [error_message, error_type]
+    used_by: [search, answer, contents]
+  - name: ErrorObject
+    fields: [code, message]
+    used_by: [listAnswerAgentRuns, createAnswerAgentRun, getAnswerAgentRun, listRetrievalAgentRuns, createRetrievalAgentRun, getRetrievalAgentRun]
+  - name: InlineError
+    fields: [error]
+    used_by: [createCard]
+error_types:
+  # APIErrorType enum (BaseAPIError.error_type) — from components.schemas.APIErrorType
+  - type: BAD_REQUEST
+    status: 400
+    title: Invalid request data (validation or malformed body).
+  - type: AUTHENTICATION_ERROR
+    status: 401
+    title: Missing or invalid API key.
+    remediation: Send a valid key in the X-API-Key header; keys are per-host.
+  - type: FORBIDDEN
+    status: 403
+    title: Action not permitted for this resource (e.g. a protected-source export).
+  - type: NOT_FOUND
+    status: 404
+    title: The requested resource does not exist or has no exportable data.
+  - type: PAYMENT_REQUIRED
+    status: 402
+    title: Insufficient API credit balance (PAYG pre-dispatch gate).
+    remediation: Top up credits in the Console before dispatching agent runs.
+  - type: RATE_LIMIT_EXCEEDED
+    status: 429
+    title: Rate limit exceeded.
+    remediation: Back off on 429 with jittered exponential retry.
+  - type: REQUEST_TIMEOUT
+    status: 408
+    title: The request exceeded the processing time limit.
+    remediation: Retry with backoff.
+  - type: RELEVANT_RESULTS_NOT_FOUND
+    title: No relevant results were found for the query.
+  - type: INTERNAL_SERVER_ERROR
+    status: 500
+    title: Internal server error.
+  - type: SERVICE_UNAVAILABLE
+    status: 503
+    title: A backing data store is temporarily unavailable.
+problems:
+  - status: 400
+    envelope: BaseAPIError
+    error_type: BAD_REQUEST
+    source_operation: openapi/tako-openapi-original.yml#search
+  - status: 401
+    envelope: BaseAPIError
+    error_type: AUTHENTICATION_ERROR
+    source_operation: openapi/tako-openapi-original.yml#search
+  - status: 408
+    envelope: BaseAPIError
+    error_type: REQUEST_TIMEOUT
+    source_operation: openapi/tako-openapi-original.yml#answer
+  - status: 403
+    envelope: BaseAPIError
+    error_type: FORBIDDEN
+    source_operation: openapi/tako-openapi-original.yml#contents
+  - status: 404
+    envelope: BaseAPIError
+    error_type: NOT_FOUND
+    source_operation: openapi/tako-openapi-original.yml#contents
+  - status: 402
+    envelope: ErrorObject
+    source_operation: openapi/tako-openapi-original.yml#createAnswerAgentRun
+  - status: 409
+    envelope: ErrorObject
+    codes: [conflict, thread_product_mismatch, source_indexes_mismatch]
+    source_operation: openapi/tako-openapi-original.yml#createAnswerAgentRun
+  - status: 503
+    envelope: BaseAPIError
+    error_type: SERVICE_UNAVAILABLE
+    source_operation: openapi/tako-openapi-original.yml#graphSearch

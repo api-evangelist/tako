@@ -1,0 +1,48 @@
+generated: '2026-07-21'
+method: searched
+source: https://tako.com/.well-known/mpp.json
+docs: https://tako.com/.well-known/agent.md
+model: per-request usage-based (Machine Payments Protocol, MPP)
+notes: >-
+  Tako exposes a Machine Payments Protocol (MPP) surface where agents pay
+  per-request and are auto-provisioned on first payment — no signup or API key
+  required for the MPP endpoints. Prices below are published verbatim in the
+  MPP manifest and agent guide (USD per request).
+currency: USD
+finops:
+  - endpoint: /api/mpp/v1/search
+    price_usd: 0.012
+    mode: sync
+    description: Knowledge cards for a data question.
+  - endpoint: /api/mpp/v1/answer
+    price_usd: 0.018
+    mode: sync
+    description: Cited natural-language answer plus knowledge cards.
+  - endpoint: /api/mpp/v1/contents
+    price_usd: 0.002
+    mode: sync
+    description: Download the data behind a result (CSV or extracted text).
+  - endpoint: /api/mpp/v1/visualize
+    price_usd: 0.036667
+    mode: sync
+    description: Visualize data you supply (inline CSV).
+  - endpoint: /api/mpp/v1/charts/edit
+    price_usd: 0.007333
+    mode: sync
+    description: Edit an existing chart.
+  - endpoint: /api/mpp/v1/thinviz/create
+    price_usd: 0.003667
+    mode: sync
+    description: Build a chart from structured component definitions.
+  - endpoint: /api/mpp/v1/reports/generate
+    price_usd: 5.50
+    mode: async
+    description: Generate a full research report (poll for completion).
+key_auth_billing:
+  model: credits / pay-as-you-go
+  notes: >-
+    The key-authenticated API (X-API-Key) bills via prepaid credits; graph
+    endpoints consume no credits; the first 20 rows of a card CSV export are free,
+    with rows beyond the free allowance billed per 1,000 rows up to a 2,000-row
+    ceiling (see ExportPricing in the OpenAPI).
+  docs: https://docs.tako.com/documentation/additional-resources/credits-and-billing

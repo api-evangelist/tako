@@ -1,0 +1,19 @@
+generated: '2026-07-21'
+method: searched
+source: https://docs.tako.com/skills/tako-graph-agent.md
+notes: >-
+  Published rate limits for the Data Graph endpoints. Documented in the
+  provider's tako-graph-agent skill. On 429 (RATE_LIMIT_EXCEEDED), back off with
+  jittered exponential retry.
+rate_limits:
+  - scope: data-graph
+    applies_to: [graphSearch, graphRelated, graphNode]
+    limit_count: 180
+    window: minute
+    daily_limit: 10000
+    credits: none
+    source: https://docs.tako.com/skills/tako-graph-agent.md
+signal:
+  on_exceed_status: 429
+  error_type: RATE_LIMIT_EXCEEDED
+  retry: jittered exponential backoff

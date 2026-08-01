@@ -1,0 +1,25 @@
+generated: '2026-07-21'
+method: derived
+source: openapi/tako-openapi-original.yml
+versioning:
+  scheme: uri-path
+  current:
+    search: v3
+    answer: v1
+    contents: v1
+    thin_viz: v1
+    agent: v1
+    graph: beta
+  notes: Per-endpoint path versioning; /beta/graph/* is explicitly beta.
+sla:
+  claimed: true
+  note: "Guaranteed SLAs stated on tako.com for mission-critical workloads; no public SLA URL confirmed."
+status_page: null
+deprecation:
+  policy_url: null
+  sunset_header: unknown
+deprecated_parameters:
+  - operation: graphRelated
+    parameter: relation_type
+    note: "Deprecated in spec; use `relation` instead."
+deprecated_operations: []

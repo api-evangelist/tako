@@ -1,0 +1,30 @@
+generated: '2026-07-21'
+method: searched
+source: https://docs.tako.com/documentation/getting-started/quickstart
+notes: >-
+  First-party SDKs and integration libraries as published in Tako's docs
+  (install commands quoted verbatim from the quickstart / integration pages).
+  Registry landing pages (npmjs.com, pypi.org) are bot-gated and were not
+  independently opened; the install names below are the provider's own.
+packages:
+  - language: python
+    registry: pypi
+    name: tako-sdk
+    install: pip install tako-sdk
+    official: true
+    source: https://docs.tako.com/documentation/getting-started/quickstart
+  - language: typescript
+    registry: npm
+    name: tako-sdk
+    url: https://www.npmjs.com/package/tako-sdk
+    install: npm install tako-sdk
+    official: true
+    source: https://docs.tako.com/documentation/getting-started/quickstart
+  - language: typescript
+    registry: npm
+    name: "@takoviz/ai-sdk"
+    url: https://www.npmjs.com/package/@takoviz/ai-sdk
+    install: npm install @takoviz/ai-sdk ai @ai-sdk/openai
+    official: true
+    kind: vercel-ai-sdk-provider
+    source: https://docs.tako.com/documentation/integrations/vercel-ai-sdk

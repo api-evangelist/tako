@@ -1,0 +1,36 @@
+generated: '2026-07-21'
+method: searched
+source: openapi/tako-openapi-original.yml
+docs: https://docs.tako.com/documentation/getting-started/quickstart
+summary:
+  types: [apiKey]
+  api_key_in: [header]
+  api_key_header: X-API-Key
+  oauth2_flows: []
+  notes: >-
+    Single auth mechanism: a per-environment API key sent in the X-API-Key
+    header. Create keys in the Tako Console (https://tako.com/console/api-keys).
+    A key only authenticates on the host it was issued for. Anonymous calls to
+    key-protected endpoints return 401 (AUTHENTICATION_ERROR). The three
+    /beta/graph/* endpoints are public and unauthenticated.
+schemes:
+  - name: apiKey
+    type: apiKey
+    in: header
+    parameter_name: X-API-Key
+    sources: [openapi/tako-openapi-original.yml]
+    applied_to:
+      - search
+      - answer
+      - contents
+      - createCard
+      - listAnswerAgentRuns
+      - createAnswerAgentRun
+      - getAnswerAgentRun
+      - listRetrievalAgentRuns
+      - createRetrievalAgentRun
+      - getRetrievalAgentRun
+public_operations:
+  - graphSearch
+  - graphRelated
+  - graphNode

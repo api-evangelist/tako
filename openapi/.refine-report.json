@@ -1,0 +1,16 @@
+{
+  "provider": "tako",
+  "sources": [
+    "tako-agent-api-openapi.yml",
+    "tako-tako-api-openapi.yml"
+  ],
+  "outputs": [
+    "tako-agent-api-openapi.yml",
+    "tako-tako-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
