@@ -1,0 +1,184 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Knowledge Search agent API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "agent",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List answer agent runs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tako.com/api/v1/agent/answer/runs",
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Opaque pagination cursor from a previous response's next_cursor."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max runs to return (default 20, max 100)."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-Key",
+              "value": "{{X-API-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "List the authenticated caller's answer agent runs, newest first. Returns trimmed run summaries. Fetch full detail via GET /v1/agent/answer/runs/{run_id}."
+        },
+        {
+          "info": {
+            "name": "Dispatch an answer agent run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://tako.com/api/v1/agent/answer/runs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-Key",
+              "value": "{{X-API-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Dispatch an answer agent run. Returns 202 with an AnswerAgentRun object. Poll GET /v1/agent/answer/runs/{run_id} until status is 'completed' or 'failed'."
+        },
+        {
+          "info": {
+            "name": "Poll an answer agent run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tako.com/api/v1/agent/answer/runs/:run_id",
+            "params": [
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path",
+                "description": "The run ID from the POST /v1/agent/answer/runs response."
+              },
+              {
+                "name": "starting_after",
+                "value": "",
+                "type": "query",
+                "description": "SSE resume cursor (Accept: text/event-stream only). The stream replays events with seq greater than this value. It is equivalent to the Last-Event-ID header."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-Key",
+              "value": "{{X-API-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Retrieve the current state of an answer agent run. Poll until status is 'completed' or 'failed'. The response includes result when status is 'completed'."
+        },
+        {
+          "info": {
+            "name": "List retrieval agent runs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tako.com/api/v1/agent/retrieval/runs",
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Opaque pagination cursor from a previous response's next_cursor."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Max runs to return (default 20, max 100)."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-Key",
+              "value": "{{X-API-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "List the authenticated caller's retrieval agent runs, newest first. Returns trimmed run summaries. Fetch full detail via GET /v1/agent/retrieval/runs/{run_id}."
+        },
+        {
+          "info": {
+            "name": "Dispatch a retrieval agent run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://tako.com/api/v1/agent/retrieval/runs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-Key",
+              "value": "{{X-API-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Dispatch a retrieval agent run. Returns 202 with a RetrievalAgentRun object. Poll GET /v1/agent/retrieval/runs/{run_id} until status is 'completed' or 'failed'."
+        },
+        {
+          "info": {
+            "name": "Poll a retrieval agent run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://tako.com/api/v1/agent/retrieval/runs/:run_id",
+            "params": [
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path",
+                "description": "The run ID from the POST /v1/agent/retrieval/runs response."
+              },
+              {
+                "name": "starting_after",
+                "value": "",
+                "type": "query",
+                "description": "SSE resume cursor (Accept: text/event-stream only). The stream replays events with seq greater than this value. It is equivalent to the Last-Event-ID header."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-Key",
+              "value": "{{X-API-Key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Retrieve the current state of a retrieval agent run. Poll until status is 'completed' or 'failed'. The response includes result when status is 'completed'."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

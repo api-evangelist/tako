@@ -1,0 +1,1978 @@
+{
+  "item": [
+    {
+      "id": "1040cceb-35bf-4fda-8258-0fbbebbb15e7",
+      "name": "tako",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "91c396d7-16a8-4161-9eaf-aa61054798c7",
+          "name": "Search",
+          "request": {
+            "name": "Search",
+            "description": {
+              "content": "Fast-pipeline knowledge search. Returns Tako cards (and web results when requested) with no LLM synthesis.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v3",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"<string>\",\n  \"effort\": \"fast\",\n  \"sources\": {\n    \"data\": {\n      \"count\": 5,\n      \"include_contents\": false,\n      \"mode\": \"inline\",\n      \"content_format\": \"json_compact\",\n      \"node_ids\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"strict\": false\n    },\n    \"web\": {\n      \"count\": 5,\n      \"include_contents\": false\n    }\n  },\n  \"country_code\": \"US\",\n  \"locale\": \"en-US\",\n  \"timezone\": \"<string>\",\n  \"output_settings\": {\n    \"image_dark_mode\": \"<boolean>\",\n    \"force_refresh\": false\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cbee5eb0-3faf-4e14-976e-2fa78753b460",
+              "name": "Fast-pipeline search results (Tako cards + web results)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v3",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"Intel vs Nvidia headcount since 2013\",\n  \"effort\": \"fast\",\n  \"sources\": {\n    \"data\": {\n      \"count\": 5,\n      \"include_contents\": false,\n      \"mode\": \"inline\",\n      \"content_format\": \"json_compact\",\n      \"node_ids\": [\n        \"string\",\n        \"string\"\n      ],\n      \"strict\": false\n    },\n    \"web\": {\n      \"count\": 5,\n      \"include_contents\": false\n    }\n  },\n  \"country_code\": \"US\",\n  \"locale\": \"en-US\",\n  \"timezone\": \"<string>\",\n  \"output_settings\": {\n    \"image_dark_mode\": false,\n    \"force_refresh\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"request_id\": \"string\",\n  \"cards\": [\n    {\n      \"card_id\": \"string\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"semantic_description\": \"string\",\n      \"webpage_url\": \"string\",\n      \"image_url\": \"string\",\n      \"embed_url\": \"string\",\n      \"sources\": [\n        {\n          \"source_index\": \"data\",\n          \"source_name\": \"string\",\n          \"source_description\": \"string\",\n          \"url\": \"string\",\n          \"source_text\": \"string\"\n        },\n        {\n          \"source_index\": \"data\",\n          \"source_name\": \"string\",\n          \"source_description\": \"string\",\n          \"url\": \"string\",\n          \"source_text\": \"string\"\n        }\n      ],\n      \"methodologies\": [\n        {\n          \"methodology_name\": \"string\",\n          \"methodology_description\": \"string\"\n        },\n        {\n          \"methodology_name\": \"string\",\n          \"methodology_description\": \"string\"\n        }\n      ],\n      \"source_indexes\": [\n        \"web\",\n        \"web\"\n      ],\n      \"card_type\": \"string\",\n      \"relevance\": \"High\",\n      \"content\": {\n        \"content_format\": \"json_records\",\n        \"cost\": 0,\n        \"data\": \"string\",\n        \"records\": [\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"dataset\": {\n          \"columns\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"total_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"truncated\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ref\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"sources\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"provenance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"url\": \"string\",\n        \"expires_at\": \"string\",\n        \"total_rows\": 7951,\n        \"truncated\": false,\n        \"export_pricing\": {\n          \"baseline_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"row_cpm_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"free_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"max_rows_ceiling\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"relevance_score\": 3978.203282293904,\n      \"nodes\": [\n        {\n          \"id\": \"string\",\n          \"type\": \"metric\",\n          \"name\": \"string\",\n          \"description\": \"string\"\n        },\n        {\n          \"id\": \"string\",\n          \"type\": \"metric\",\n          \"name\": \"string\",\n          \"description\": \"string\"\n        }\n      ],\n      \"metric_definitions\": [\n        {\n          \"name\": \"Gross Domestic Product (current US$)\",\n          \"definition\": \"string\"\n        },\n        {\n          \"name\": \"Gross Domestic Product (current US$)\",\n          \"definition\": \"string\"\n        }\n      ],\n      \"data_freshness\": {\n        \"data_as_of\": \"string\",\n        \"last_updated\": \"string\"\n      }\n    },\n    {\n      \"card_id\": \"string\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"semantic_description\": \"string\",\n      \"webpage_url\": \"string\",\n      \"image_url\": \"string\",\n      \"embed_url\": \"string\",\n      \"sources\": [\n        {\n          \"source_index\": \"data\",\n          \"source_name\": \"string\",\n          \"source_description\": \"string\",\n          \"url\": \"string\",\n          \"source_text\": \"string\"\n        },\n        {\n          \"source_index\": \"data\",\n          \"source_name\": \"string\",\n          \"source_description\": \"string\",\n          \"url\": \"string\",\n          \"source_text\": \"string\"\n        }\n      ],\n      \"methodologies\": [\n        {\n          \"methodology_name\": \"string\",\n          \"methodology_description\": \"string\"\n        },\n        {\n          \"methodology_name\": \"string\",\n          \"methodology_description\": \"string\"\n        }\n      ],\n      \"source_indexes\": [\n        \"web\",\n        \"web\"\n      ],\n      \"card_type\": \"string\",\n      \"relevance\": \"High\",\n      \"content\": {\n        \"content_format\": \"json_records\",\n        \"cost\": 0,\n        \"data\": \"string\",\n        \"records\": [\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"dataset\": {\n          \"columns\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"total_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"truncated\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ref\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"sources\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"provenance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"url\": \"string\",\n        \"expires_at\": \"string\",\n        \"total_rows\": 3699,\n        \"truncated\": false,\n        \"export_pricing\": {\n          \"baseline_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"row_cpm_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"free_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"max_rows_ceiling\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"relevance_score\": 9038.357981143123,\n      \"nodes\": [\n        {\n          \"id\": \"string\",\n          \"type\": \"entity\",\n          \"name\": \"string\",\n          \"description\": \"string\"\n        },\n        {\n          \"id\": \"string\",\n          \"type\": \"metric\",\n          \"name\": \"string\",\n          \"description\": \"string\"\n        }\n      ],\n      \"metric_definitions\": [\n        {\n          \"name\": \"Gross Domestic Product (current US$)\",\n          \"definition\": \"string\"\n        },\n        {\n          \"name\": \"Gross Domestic Product (current US$)\",\n          \"definition\": \"string\"\n        }\n      ],\n      \"data_freshness\": {\n        \"data_as_of\": \"string\",\n        \"last_updated\": \"string\"\n      }\n    }\n  ],\n  \"web_results\": [\n    {\n      \"title\": \"string\",\n      \"url\": \"string\",\n      \"snippet\": \"string\",\n      \"source_name\": \"string\",\n      \"publish_date\": \"string\",\n      \"content\": {\n        \"content_format\": \"json_records\",\n        \"cost\": 0,\n        \"data\": \"string\",\n        \"records\": [\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"dataset\": {\n          \"columns\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"total_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"truncated\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ref\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"sources\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"provenance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"url\": \"string\",\n        \"expires_at\": \"string\",\n        \"total_rows\": 1165,\n        \"truncated\": false,\n        \"export_pricing\": {\n          \"baseline_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"row_cpm_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"free_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"max_rows_ceiling\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"citation_number\": 9885\n    },\n    {\n      \"title\": \"string\",\n      \"url\": \"string\",\n      \"snippet\": \"string\",\n      \"source_name\": \"string\",\n      \"publish_date\": \"string\",\n      \"content\": {\n        \"content_format\": \"json_records\",\n        \"cost\": 0,\n        \"data\": \"string\",\n        \"records\": [\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"dataset\": {\n          \"columns\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"total_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"truncated\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ref\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"sources\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"provenance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"url\": \"string\",\n        \"expires_at\": \"string\",\n        \"total_rows\": 6156,\n        \"truncated\": false,\n        \"export_pricing\": {\n          \"baseline_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"row_cpm_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"free_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"max_rows_ceiling\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"citation_number\": 9911\n    }\n  ],\n  \"usage\": {\n    \"total_cost_usd\": 4280.137507736029,\n    \"compute\": {\n      \"cost_usd\": 9337.417902433597\n    },\n    \"data\": {\n      \"cost_usd\": 1820.1692147423166,\n      \"datasets\": 3387\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "534aa73d-08b9-41e3-ba6c-4448b1488b82",
+              "name": "Invalid request data (validation or malformed body).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v3",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"Intel vs Nvidia headcount since 2013\",\n  \"effort\": \"fast\",\n  \"sources\": {\n    \"data\": {\n      \"count\": 5,\n      \"include_contents\": false,\n      \"mode\": \"inline\",\n      \"content_format\": \"json_compact\",\n      \"node_ids\": [\n        \"string\",\n        \"string\"\n      ],\n      \"strict\": false\n    },\n    \"web\": {\n      \"count\": 5,\n      \"include_contents\": false\n    }\n  },\n  \"country_code\": \"US\",\n  \"locale\": \"en-US\",\n  \"timezone\": \"<string>\",\n  \"output_settings\": {\n    \"image_dark_mode\": false,\n    \"force_refresh\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba90765b-1ffe-4d33-b2bf-a2b44e71d5cf",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v3",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"Intel vs Nvidia headcount since 2013\",\n  \"effort\": \"fast\",\n  \"sources\": {\n    \"data\": {\n      \"count\": 5,\n      \"include_contents\": false,\n      \"mode\": \"inline\",\n      \"content_format\": \"json_compact\",\n      \"node_ids\": [\n        \"string\",\n        \"string\"\n      ],\n      \"strict\": false\n    },\n    \"web\": {\n      \"count\": 5,\n      \"include_contents\": false\n    }\n  },\n  \"country_code\": \"US\",\n  \"locale\": \"en-US\",\n  \"timezone\": \"<string>\",\n  \"output_settings\": {\n    \"image_dark_mode\": false,\n    \"force_refresh\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "026a7122-9e99-43bf-a60f-034667e345e7",
+              "name": "The request exceeded the processing time limit.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v3",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"Intel vs Nvidia headcount since 2013\",\n  \"effort\": \"fast\",\n  \"sources\": {\n    \"data\": {\n      \"count\": 5,\n      \"include_contents\": false,\n      \"mode\": \"inline\",\n      \"content_format\": \"json_compact\",\n      \"node_ids\": [\n        \"string\",\n        \"string\"\n      ],\n      \"strict\": false\n    },\n    \"web\": {\n      \"count\": 5,\n      \"include_contents\": false\n    }\n  },\n  \"country_code\": \"US\",\n  \"locale\": \"en-US\",\n  \"timezone\": \"<string>\",\n  \"output_settings\": {\n    \"image_dark_mode\": false,\n    \"force_refresh\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Request Timeout",
+              "code": 408,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "14388e98-eeee-4892-b63e-b94eb1707cff",
+          "name": "Answer",
+          "request": {
+            "name": "Answer",
+            "description": {
+              "content": "Fast-pipeline retrieval plus an LLM-synthesized answer with confidence. Replaces the grounding endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "answer"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"<string>\",\n  \"effort\": \"fast\",\n  \"sources\": {\n    \"data\": {\n      \"count\": 5,\n      \"include_contents\": false,\n      \"mode\": \"inline\",\n      \"content_format\": \"json_compact\",\n      \"node_ids\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"strict\": false\n    },\n    \"web\": {\n      \"count\": 5,\n      \"include_contents\": false\n    }\n  },\n  \"country_code\": \"US\",\n  \"locale\": \"en-US\",\n  \"timezone\": \"<string>\",\n  \"output_settings\": {\n    \"image_dark_mode\": \"<boolean>\",\n    \"force_refresh\": false\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "adad14af-219a-485e-9034-fe64f955089f",
+              "name": "Synthesized answer grounded in Tako results, web results, or both",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "answer"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"Intel vs Nvidia headcount since 2013\",\n  \"effort\": \"fast\",\n  \"sources\": {\n    \"data\": {\n      \"count\": 5,\n      \"include_contents\": false,\n      \"mode\": \"inline\",\n      \"content_format\": \"json_compact\",\n      \"node_ids\": [\n        \"string\",\n        \"string\"\n      ],\n      \"strict\": false\n    },\n    \"web\": {\n      \"count\": 5,\n      \"include_contents\": false\n    }\n  },\n  \"country_code\": \"US\",\n  \"locale\": \"en-US\",\n  \"timezone\": \"<string>\",\n  \"output_settings\": {\n    \"image_dark_mode\": false,\n    \"force_refresh\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"answer\": \"string\",\n  \"request_id\": \"string\",\n  \"cards\": [\n    {\n      \"card_id\": \"string\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"semantic_description\": \"string\",\n      \"webpage_url\": \"string\",\n      \"image_url\": \"string\",\n      \"embed_url\": \"string\",\n      \"sources\": [\n        {\n          \"source_index\": \"data\",\n          \"source_name\": \"string\",\n          \"source_description\": \"string\",\n          \"url\": \"string\",\n          \"source_text\": \"string\"\n        },\n        {\n          \"source_index\": \"data\",\n          \"source_name\": \"string\",\n          \"source_description\": \"string\",\n          \"url\": \"string\",\n          \"source_text\": \"string\"\n        }\n      ],\n      \"methodologies\": [\n        {\n          \"methodology_name\": \"string\",\n          \"methodology_description\": \"string\"\n        },\n        {\n          \"methodology_name\": \"string\",\n          \"methodology_description\": \"string\"\n        }\n      ],\n      \"source_indexes\": [\n        \"data\",\n        \"web\"\n      ],\n      \"card_type\": \"string\",\n      \"relevance\": \"Low\",\n      \"content\": {\n        \"content_format\": \"json_records\",\n        \"cost\": 0,\n        \"data\": \"string\",\n        \"records\": [\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"dataset\": {\n          \"columns\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"total_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"truncated\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ref\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"sources\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"provenance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"url\": \"string\",\n        \"expires_at\": \"string\",\n        \"total_rows\": 7652,\n        \"truncated\": false,\n        \"export_pricing\": {\n          \"baseline_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"row_cpm_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"free_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"max_rows_ceiling\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"relevance_score\": 3177.769386482131,\n      \"nodes\": [\n        {\n          \"id\": \"string\",\n          \"type\": \"entity\",\n          \"name\": \"string\",\n          \"description\": \"string\"\n        },\n        {\n          \"id\": \"string\",\n          \"type\": \"metric\",\n          \"name\": \"string\",\n          \"description\": \"string\"\n        }\n      ],\n      \"metric_definitions\": [\n        {\n          \"name\": \"Gross Domestic Product (current US$)\",\n          \"definition\": \"string\"\n        },\n        {\n          \"name\": \"Gross Domestic Product (current US$)\",\n          \"definition\": \"string\"\n        }\n      ],\n      \"data_freshness\": {\n        \"data_as_of\": \"string\",\n        \"last_updated\": \"string\"\n      }\n    },\n    {\n      \"card_id\": \"string\",\n      \"title\": \"string\",\n      \"description\": \"string\",\n      \"semantic_description\": \"string\",\n      \"webpage_url\": \"string\",\n      \"image_url\": \"string\",\n      \"embed_url\": \"string\",\n      \"sources\": [\n        {\n          \"source_index\": \"data\",\n          \"source_name\": \"string\",\n          \"source_description\": \"string\",\n          \"url\": \"string\",\n          \"source_text\": \"string\"\n        },\n        {\n          \"source_index\": \"data\",\n          \"source_name\": \"string\",\n          \"source_description\": \"string\",\n          \"url\": \"string\",\n          \"source_text\": \"string\"\n        }\n      ],\n      \"methodologies\": [\n        {\n          \"methodology_name\": \"string\",\n          \"methodology_description\": \"string\"\n        },\n        {\n          \"methodology_name\": \"string\",\n          \"methodology_description\": \"string\"\n        }\n      ],\n      \"source_indexes\": [\n        \"data\",\n        \"web\"\n      ],\n      \"card_type\": \"string\",\n      \"relevance\": \"Low\",\n      \"content\": {\n        \"content_format\": \"json_records\",\n        \"cost\": 0,\n        \"data\": \"string\",\n        \"records\": [\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"dataset\": {\n          \"columns\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"total_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"truncated\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ref\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"sources\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"provenance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"url\": \"string\",\n        \"expires_at\": \"string\",\n        \"total_rows\": 2048,\n        \"truncated\": false,\n        \"export_pricing\": {\n          \"baseline_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"row_cpm_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"free_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"max_rows_ceiling\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"relevance_score\": 9812.944400396966,\n      \"nodes\": [\n        {\n          \"id\": \"string\",\n          \"type\": \"entity\",\n          \"name\": \"string\",\n          \"description\": \"string\"\n        },\n        {\n          \"id\": \"string\",\n          \"type\": \"entity\",\n          \"name\": \"string\",\n          \"description\": \"string\"\n        }\n      ],\n      \"metric_definitions\": [\n        {\n          \"name\": \"Gross Domestic Product (current US$)\",\n          \"definition\": \"string\"\n        },\n        {\n          \"name\": \"Gross Domestic Product (current US$)\",\n          \"definition\": \"string\"\n        }\n      ],\n      \"data_freshness\": {\n        \"data_as_of\": \"string\",\n        \"last_updated\": \"string\"\n      }\n    }\n  ],\n  \"web_results\": [\n    {\n      \"title\": \"string\",\n      \"url\": \"string\",\n      \"snippet\": \"string\",\n      \"source_name\": \"string\",\n      \"publish_date\": \"string\",\n      \"content\": {\n        \"content_format\": \"csv\",\n        \"cost\": 0,\n        \"data\": \"string\",\n        \"records\": [\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"dataset\": {\n          \"columns\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"total_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"truncated\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ref\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"sources\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"provenance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"url\": \"string\",\n        \"expires_at\": \"string\",\n        \"total_rows\": 9926,\n        \"truncated\": false,\n        \"export_pricing\": {\n          \"baseline_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"row_cpm_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"free_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"max_rows_ceiling\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"citation_number\": 7593\n    },\n    {\n      \"title\": \"string\",\n      \"url\": \"string\",\n      \"snippet\": \"string\",\n      \"source_name\": \"string\",\n      \"publish_date\": \"string\",\n      \"content\": {\n        \"content_format\": \"json_compact\",\n        \"cost\": 0,\n        \"data\": \"string\",\n        \"records\": [\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"key_0\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_1\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_2\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_3\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key_4\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"dataset\": {\n          \"columns\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"total_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"truncated\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ref\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"sources\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"provenance\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        \"url\": \"string\",\n        \"expires_at\": \"string\",\n        \"total_rows\": 775,\n        \"truncated\": false,\n        \"export_pricing\": {\n          \"baseline_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"row_cpm_usd\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"free_rows\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"max_rows_ceiling\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"citation_number\": 4533\n    }\n  ],\n  \"usage\": {\n    \"total_cost_usd\": 518.0916525689483,\n    \"compute\": {\n      \"cost_usd\": 1825.456642399582\n    },\n    \"data\": {\n      \"cost_usd\": 1302.9622586389344,\n      \"datasets\": 3434\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1211e8c3-62a2-498a-bba0-a993213d2878",
+              "name": "Invalid request data (validation or malformed body).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "answer"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"Intel vs Nvidia headcount since 2013\",\n  \"effort\": \"fast\",\n  \"sources\": {\n    \"data\": {\n      \"count\": 5,\n      \"include_contents\": false,\n      \"mode\": \"inline\",\n      \"content_format\": \"json_compact\",\n      \"node_ids\": [\n        \"string\",\n        \"string\"\n      ],\n      \"strict\": false\n    },\n    \"web\": {\n      \"count\": 5,\n      \"include_contents\": false\n    }\n  },\n  \"country_code\": \"US\",\n  \"locale\": \"en-US\",\n  \"timezone\": \"<string>\",\n  \"output_settings\": {\n    \"image_dark_mode\": false,\n    \"force_refresh\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f3c667fb-37ee-40b0-9556-164ebd7bb1f0",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "answer"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"Intel vs Nvidia headcount since 2013\",\n  \"effort\": \"fast\",\n  \"sources\": {\n    \"data\": {\n      \"count\": 5,\n      \"include_contents\": false,\n      \"mode\": \"inline\",\n      \"content_format\": \"json_compact\",\n      \"node_ids\": [\n        \"string\",\n        \"string\"\n      ],\n      \"strict\": false\n    },\n    \"web\": {\n      \"count\": 5,\n      \"include_contents\": false\n    }\n  },\n  \"country_code\": \"US\",\n  \"locale\": \"en-US\",\n  \"timezone\": \"<string>\",\n  \"output_settings\": {\n    \"image_dark_mode\": false,\n    \"force_refresh\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "de46fbe0-841b-485b-b95e-5c096481e906",
+              "name": "The request exceeded the processing time limit.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "answer"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"Intel vs Nvidia headcount since 2013\",\n  \"effort\": \"fast\",\n  \"sources\": {\n    \"data\": {\n      \"count\": 5,\n      \"include_contents\": false,\n      \"mode\": \"inline\",\n      \"content_format\": \"json_compact\",\n      \"node_ids\": [\n        \"string\",\n        \"string\"\n      ],\n      \"strict\": false\n    },\n    \"web\": {\n      \"count\": 5,\n      \"include_contents\": false\n    }\n  },\n  \"country_code\": \"US\",\n  \"locale\": \"en-US\",\n  \"timezone\": \"<string>\",\n  \"output_settings\": {\n    \"image_dark_mode\": false,\n    \"force_refresh\": false\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Request Timeout",
+              "code": 408,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "586ae270-da72-462f-a7d2-23e141a50d11",
+          "name": "Search the data graph",
+          "request": {
+            "name": "Search the data graph",
+            "description": {
+              "content": "Resolve a metric or entity in Tako's data graph by name. Use this to discover and confirm what data exists before you query. For example, resolve the metric and the entity here, then ask /v3/search or /v1/answer for that entity + metric combination. Public and unauthenticated. Note: Tako does not yet filter results to the production-ready inventory. A returned metric or entity without a production fact table can 404 when you pass it to /beta/graph/related. Pass label to prefer a NER label (a ranking boost, not a filter); by default Tako infers the label from q.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "beta",
+                "graph",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "q",
+                  "value": "<string>",
+                  "description": "(Required) Search text (min 2 chars)."
+                },
+                {
+                  "disabled": false,
+                  "key": "types",
+                  "value": "<string>",
+                  "description": "Comma-separated facets: metric,entity."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Max results (default 20, max 50)."
+                },
+                {
+                  "disabled": false,
+                  "key": "label",
+                  "value": "<string>",
+                  "description": "Prefer results with this NER label (boost, not a filter — matching nodes rank higher; others still return). Supplying label disables inference."
+                },
+                {
+                  "disabled": false,
+                  "key": "infer_label",
+                  "value": "<boolean>",
+                  "description": "When true, Tako NER infers the label and grounded-node boosts from q. Set false to disable. Tako ignores this parameter when you supply label. Default true."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a6c81c3a-0b09-4ea2-b2bf-185b95bd6045",
+              "name": "Matching metrics and entities",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "beta",
+                    "graph",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "types",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "infer_label",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"results\": [\n    {\n      \"id\": \"string\",\n      \"type\": \"metric\",\n      \"name\": \"string\",\n      \"aliases\": [\n        \"string\",\n        \"string\"\n      ],\n      \"description\": \"string\",\n      \"subtype\": \"Industries\",\n      \"label\": \"EVENT\"\n    },\n    {\n      \"id\": \"string\",\n      \"type\": \"metric\",\n      \"name\": \"string\",\n      \"aliases\": [\n        \"string\",\n        \"string\"\n      ],\n      \"description\": \"string\",\n      \"subtype\": \"F1 Drivers\",\n      \"label\": \"MONEY\"\n    }\n  ],\n  \"inferred_labels\": [\n    \"ORG\",\n    \"EVENT\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cb43b147-ec96-42b2-a66d-c6f1c922d764",
+              "name": "Invalid request data (validation or malformed body).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "beta",
+                    "graph",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "types",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "infer_label",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "67cdc400-7067-49c5-843d-4f54ea3bc63f",
+              "name": "A backing data store is temporarily unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "beta",
+                    "graph",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "types",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "infer_label",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "613a7ba4-1d74-4b24-a6e1-292f5d00507f",
+          "name": "Get a graph node's related nodes",
+          "request": {
+            "name": "Get a graph node's related nodes",
+            "description": {
+              "content": "Explore what a node connects to. The overview returns an ordered `relations` list: named relationships (for example `rel:competes_with`, `rel:in_industry`) first, then a node's metrics and entities, then similar nodes and membership (part_of, members). The metrics and entities are the entity + metric combinations Tako covers — query /v3/search or /v1/answer for one. Each group carries a stable `key`. Pass `relation`=<key> plus cursor to paginate that one group. Pass the optional q to narrow by a case-insensitive substring on names and aliases (for example, the metrics of an entity that match 'gdp'). Public and unauthenticated.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "beta",
+                "graph",
+                "related"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "node_id",
+                  "value": "<string>",
+                  "description": "(Required) Opaque public id of the node."
+                },
+                {
+                  "disabled": false,
+                  "key": "relation",
+                  "value": "<string>",
+                  "description": "Relation key to paginate, for example `rel:competes_with`, `metrics`, `entities`, `siblings`, or `members`."
+                },
+                {
+                  "disabled": false,
+                  "key": "relation_type",
+                  "value": "<string>",
+                  "description": "Deprecated: use `relation`. A legacy facet name (metric, entity, sibling, or member) that maps to a key."
+                },
+                {
+                  "disabled": false,
+                  "key": "q",
+                  "value": "<string>",
+                  "description": "Optional case-insensitive substring filter on the related nodes' names and aliases. It filters every group of the overview, or the single paginated group when you set `relation`."
+                },
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "Opaque pagination cursor."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Page size (default 50, max 100)."
+                },
+                {
+                  "disabled": false,
+                  "key": "label",
+                  "value": "<string>",
+                  "description": "Prefer related nodes with this NER label. This is a boost, not a filter: matching nodes rank higher within each relation, and totals do not change. Supplying label disables inference."
+                },
+                {
+                  "disabled": false,
+                  "key": "infer_label",
+                  "value": "<boolean>",
+                  "description": "When true, Tako NER infers the label and grounded-node boosts from q. Set false to disable. Tako ignores this parameter when you supply label. It applies only when q is present. Default true."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ae969e42-191d-4a6c-a0a9-078955f17925",
+              "name": "A node's details plus related nodes by facet",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "beta",
+                    "graph",
+                    "related"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "node_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "relation",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "relation_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "infer_label",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"node\": {\n    \"id\": \"string\",\n    \"type\": \"entity\",\n    \"name\": \"string\",\n    \"aliases\": [\n      \"string\",\n      \"string\"\n    ],\n    \"description\": \"string\",\n    \"subtype\": \"Agricultural Products\",\n    \"label\": \"LANGUAGE\"\n  },\n  \"relations\": [\n    {\n      \"key\": \"string\",\n      \"kind\": \"sibling\",\n      \"label\": \"string\",\n      \"items\": [\n        {\n          \"id\": \"string\",\n          \"type\": \"entity\",\n          \"name\": \"string\",\n          \"aliases\": [\n            \"string\",\n            \"string\"\n          ],\n          \"description\": \"string\",\n          \"subtype\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"label\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"id\": \"string\",\n          \"type\": \"entity\",\n          \"name\": \"string\",\n          \"aliases\": [\n            \"string\",\n            \"string\"\n          ],\n          \"description\": \"string\",\n          \"subtype\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"label\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"total\": 7396,\n      \"total_capped\": false\n    },\n    {\n      \"key\": \"string\",\n      \"kind\": \"membership\",\n      \"label\": \"string\",\n      \"items\": [\n        {\n          \"id\": \"string\",\n          \"type\": \"entity\",\n          \"name\": \"string\",\n          \"aliases\": [\n            \"string\",\n            \"string\"\n          ],\n          \"description\": \"string\",\n          \"subtype\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"label\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"id\": \"string\",\n          \"type\": \"entity\",\n          \"name\": \"string\",\n          \"aliases\": [\n            \"string\",\n            \"string\"\n          ],\n          \"description\": \"string\",\n          \"subtype\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"label\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"total\": 4143,\n      \"total_capped\": false\n    }\n  ],\n  \"relation\": {\n    \"key\": \"string\",\n    \"kind\": \"sibling\",\n    \"label\": \"string\",\n    \"items\": [\n      {\n        \"id\": \"string\",\n        \"type\": \"entity\",\n        \"name\": \"string\",\n        \"aliases\": [\n          \"string\",\n          \"string\"\n        ],\n        \"description\": \"string\",\n        \"subtype\": \"Drug Categories\",\n        \"label\": \"STOCK_TICKER\"\n      },\n      {\n        \"id\": \"string\",\n        \"type\": \"entity\",\n        \"name\": \"string\",\n        \"aliases\": [\n          \"string\",\n          \"string\"\n        ],\n        \"description\": \"string\",\n        \"subtype\": \"World Regions\",\n        \"label\": \"LANGUAGE\"\n      }\n    ],\n    \"total\": 2002,\n    \"total_capped\": false,\n    \"next_cursor\": \"string\"\n  },\n  \"inferred_labels\": [\n    \"METRIC\",\n    \"STOCK_TICKER\"\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "24bfc555-f644-4532-a071-1df042bd7c0a",
+              "name": "Invalid request data (validation or malformed body).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "beta",
+                    "graph",
+                    "related"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "node_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "relation",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "relation_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "infer_label",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1ff0ec6d-6854-494a-b15c-a664cee50e8f",
+              "name": "The requested resource does not exist or has no exportable data.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "beta",
+                    "graph",
+                    "related"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "node_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "relation",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "relation_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "infer_label",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5482b3ea-50fe-4d21-95c9-bfd7ac058939",
+              "name": "A backing data store is temporarily unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "beta",
+                    "graph",
+                    "related"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "node_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "relation",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "relation_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "q",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "label",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "infer_label",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1fe305a-946c-4e82-afed-9d183b74c4d9",
+          "name": "Get a graph node by id",
+          "request": {
+            "name": "Get a graph node by id",
+            "description": {
+              "content": "Resolve a single node by its opaque public id. Search cards, /beta/graph/search, and /beta/graph/related return these ids. Returns the node's name, type, aliases, and description. Public and unauthenticated.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "beta",
+                "graph",
+                "node",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "id",
+                  "description": "(Required) Opaque public id of the node."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d66fa886-e8ee-4828-bc82-25e55387d837",
+              "name": "A single graph node",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "beta",
+                    "graph",
+                    "node",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Opaque public id of the node."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"type\": \"metric\",\n  \"name\": \"string\",\n  \"aliases\": [\n    \"string\",\n    \"string\"\n  ],\n  \"description\": \"string\",\n  \"subtype\": \"Federal Contractors\",\n  \"label\": \"PRODUCT\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a41b9a6f-9fb8-4a76-a57d-58b65a28ef5c",
+              "name": "The requested resource does not exist or has no exportable data.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "beta",
+                    "graph",
+                    "node",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Opaque public id of the node."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "029324da-fa84-4899-b1dd-c2496bc40dd0",
+              "name": "A backing data store is temporarily unavailable.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "beta",
+                    "graph",
+                    "node",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "id",
+                      "description": "(Required) Opaque public id of the node."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8b0cb128-1bcf-4003-9736-6beafa80cb3a",
+          "name": "Download content",
+          "request": {
+            "name": "Download content",
+            "description": {
+              "content": "Download the content behind a search result: a CSV of a Tako card's underlying data, or the full text of a web page. Returns a short-lived presigned download URL. Protected-source cards (data export not available) return 403. Send `quote_only: true` to get only the export's price (`cost` + `export_pricing`) with an empty payload. A quote is free: Tako fetches nothing and charges nothing.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "contents"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"<string>\",\n  \"mode\": \"url\",\n  \"content_format\": \"csv\",\n  \"max_rows\": \"<integer>\",\n  \"quote_only\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ba8f70a6-359b-446b-a573-cc829792b6a4",
+              "name": "Downloadable content for a result: a presigned URL plus format and cost metadata. For a `quote_only` request the item instead carries only the price (`cost` + `export_pricing`) with all payload and url fields null.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"https://tako.com/card/abc123\",\n  \"mode\": \"url\",\n  \"content_format\": \"csv\",\n  \"max_rows\": \"<integer>\",\n  \"quote_only\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"request_id\": \"string\",\n  \"contents\": [\n    {\n      \"source_url\": \"string\",\n      \"content_format\": \"json_records\",\n      \"cost\": 0,\n      \"data\": \"string\",\n      \"records\": [\n        {\n          \"key_0\": \"string\"\n        },\n        {\n          \"key_0\": \"string\",\n          \"key_1\": \"string\",\n          \"key_2\": \"string\"\n        }\n      ],\n      \"dataset\": {\n        \"columns\": [\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"rows\": [\n          [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        ],\n        \"total_rows\": 2822,\n        \"truncated\": false,\n        \"ref\": \"string\",\n        \"sources\": [\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"index\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"index\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"provenance\": \"query\"\n      },\n      \"url\": \"string\",\n      \"expires_at\": \"string\",\n      \"total_rows\": 9947,\n      \"truncated\": false,\n      \"export_pricing\": {\n        \"baseline_usd\": 2705.123416918822,\n        \"row_cpm_usd\": 1563.533918405897,\n        \"free_rows\": 5868,\n        \"max_rows_ceiling\": 2848\n      }\n    },\n    {\n      \"source_url\": \"string\",\n      \"content_format\": \"json_compact\",\n      \"cost\": 0,\n      \"data\": \"string\",\n      \"records\": [\n        {\n          \"key_0\": \"string\",\n          \"key_1\": \"string\",\n          \"key_2\": \"string\",\n          \"key_3\": \"string\"\n        },\n        {\n          \"key_0\": \"string\",\n          \"key_1\": \"string\"\n        }\n      ],\n      \"dataset\": {\n        \"columns\": [\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"rows\": [\n          [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ],\n          [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        ],\n        \"total_rows\": 4106,\n        \"truncated\": false,\n        \"ref\": \"string\",\n        \"sources\": [\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"index\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"index\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ],\n        \"provenance\": \"query\"\n      },\n      \"url\": \"string\",\n      \"expires_at\": \"string\",\n      \"total_rows\": 3378,\n      \"truncated\": false,\n      \"export_pricing\": {\n        \"baseline_usd\": 8723.44997759214,\n        \"row_cpm_usd\": 8378.711636594713,\n        \"free_rows\": 7343,\n        \"max_rows_ceiling\": 9992\n      }\n    }\n  ],\n  \"usage\": {\n    \"total_cost_usd\": 4913.7182007203055,\n    \"compute\": {\n      \"cost_usd\": 8598.988574935509\n    },\n    \"data\": {\n      \"cost_usd\": 9272.265529222499,\n      \"datasets\": 7703\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "46051004-46f8-4e83-95c3-8c7a15c94a07",
+              "name": "Invalid request data (validation or malformed body).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"https://tako.com/card/abc123\",\n  \"mode\": \"url\",\n  \"content_format\": \"csv\",\n  \"max_rows\": \"<integer>\",\n  \"quote_only\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "54faadc2-88a4-4edd-8e23-d55c3a3c847c",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"https://tako.com/card/abc123\",\n  \"mode\": \"url\",\n  \"content_format\": \"csv\",\n  \"max_rows\": \"<integer>\",\n  \"quote_only\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "05121f13-d28a-4e16-819a-379bfab3bff2",
+              "name": "Action not permitted for this resource (for example, a protected-source export).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"https://tako.com/card/abc123\",\n  \"mode\": \"url\",\n  \"content_format\": \"csv\",\n  \"max_rows\": \"<integer>\",\n  \"quote_only\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "41876404-ff01-4b08-a97e-bde865856426",
+              "name": "The requested resource does not exist or has no exportable data.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "contents"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"https://tako.com/card/abc123\",\n  \"mode\": \"url\",\n  \"content_format\": \"csv\",\n  \"max_rows\": \"<integer>\",\n  \"quote_only\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error_message\": \"string\",\n  \"error_type\": \"FORBIDDEN\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8fb6f3f5-1d64-4034-9c04-75b70077582e",
+          "name": "create Card",
+          "request": {
+            "name": "create Card",
+            "description": {
+              "content": "Create a visualization card directly from component configurations. Supported component types: header, generic_timeseries, categorical_bar, stock_boxes, financial_boxes, table.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "thin_viz",
+                "create",
+                ""
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-Key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"components\": [\n    {\n      \"component_type\": \"<string>\",\n      \"config\": {\n        \"key_0\": \"string\"\n      },\n      \"component_variant\": \"<string>\"\n    },\n    {\n      \"component_type\": \"<string>\",\n      \"config\": {\n        \"key_0\": \"string\"\n      },\n      \"component_variant\": \"<string>\"\n    }\n  ],\n  \"title\": \"<string>\",\n  \"description\": \"<string>\",\n  \"source\": \"<string>\",\n  \"height\": \"<integer>\",\n  \"postmessage_embed\": false,\n  \"normalize_currencies\": \"<string>\",\n  \"image_ttl_minutes\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b83e7d33-f02a-40b7-b95c-c6f08e85f328",
+              "name": "Card created successfully from schema",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "thin_viz",
+                    "create",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"components\": [\n    {\n      \"component_type\": \"financial_boxes\",\n      \"config\": {\n        \"key_0\": 1824\n      },\n      \"component_variant\": \"string\"\n    },\n    {\n      \"component_type\": \"data_table_chart\",\n      \"config\": {\n        \"key_0\": 5402,\n        \"key_1\": 7619,\n        \"key_2\": \"string\"\n      },\n      \"component_variant\": \"string\"\n    }\n  ],\n  \"title\": \"<string>\",\n  \"description\": \"<string>\",\n  \"source\": \"<string>\",\n  \"height\": \"<integer>\",\n  \"postmessage_embed\": false,\n  \"normalize_currencies\": \"<string>\",\n  \"image_ttl_minutes\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"card_id\": \"string\",\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"webpage_url\": \"string\",\n  \"image_url\": \"string\",\n  \"embed_url\": \"string\",\n  \"card_type\": \"string\",\n  \"visualization_data\": {\n    \"key_0\": \"string\"\n  },\n  \"embed_mode\": \"post\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4b711d97-2080-4c0b-a18d-ce30551255a8",
+              "name": "Bad request - validation error or component mismatch",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "thin_viz",
+                    "create",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"components\": [\n    {\n      \"component_type\": \"financial_boxes\",\n      \"config\": {\n        \"key_0\": 1824\n      },\n      \"component_variant\": \"string\"\n    },\n    {\n      \"component_type\": \"data_table_chart\",\n      \"config\": {\n        \"key_0\": 5402,\n        \"key_1\": 7619,\n        \"key_2\": \"string\"\n      },\n      \"component_variant\": \"string\"\n    }\n  ],\n  \"title\": \"<string>\",\n  \"description\": \"<string>\",\n  \"source\": \"<string>\",\n  \"height\": \"<integer>\",\n  \"postmessage_embed\": false,\n  \"normalize_currencies\": \"<string>\",\n  \"image_ttl_minutes\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6c820e8f-9120-4433-8d5a-bf28c1c9bd9d",
+              "name": "Schema not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "thin_viz",
+                    "create",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"components\": [\n    {\n      \"component_type\": \"financial_boxes\",\n      \"config\": {\n        \"key_0\": 1824\n      },\n      \"component_variant\": \"string\"\n    },\n    {\n      \"component_type\": \"data_table_chart\",\n      \"config\": {\n        \"key_0\": 5402,\n        \"key_1\": 7619,\n        \"key_2\": \"string\"\n      },\n      \"component_variant\": \"string\"\n    }\n  ],\n  \"title\": \"<string>\",\n  \"description\": \"<string>\",\n  \"source\": \"<string>\",\n  \"height\": \"<integer>\",\n  \"postmessage_embed\": false,\n  \"normalize_currencies\": \"<string>\",\n  \"image_ttl_minutes\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e57b00ed-c124-4327-8e23-e6df3c588d7b",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "thin_viz",
+                    "create",
+                    ""
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"components\": [\n    {\n      \"component_type\": \"financial_boxes\",\n      \"config\": {\n        \"key_0\": 1824\n      },\n      \"component_variant\": \"string\"\n    },\n    {\n      \"component_type\": \"data_table_chart\",\n      \"config\": {\n        \"key_0\": 5402,\n        \"key_1\": 7619,\n        \"key_2\": \"string\"\n      },\n      \"component_variant\": \"string\"\n    }\n  ],\n  \"title\": \"<string>\",\n  \"description\": \"<string>\",\n  \"source\": \"<string>\",\n  \"height\": \"<integer>\",\n  \"postmessage_embed\": false,\n  \"normalize_currencies\": \"<string>\",\n  \"image_ttl_minutes\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://tako.com/api/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "3eab711f-6bfe-42dc-8a35-348f9787f139",
+    "name": "Knowledge Search agent tako API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "",
+      "type": "text/plain"
+    }
+  }
+}

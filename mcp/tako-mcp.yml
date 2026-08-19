@@ -7,25 +7,35 @@ server:
   transport: http
   url: https://mcp.tako.com/mcp
   auth: X-API-Key (Tako API key)
-  clients: [Claude, ChatGPT, Cursor, VS Code]
-notes: >-
-  Tako operates an official hosted/remote MCP server at https://mcp.tako.com/mcp
-  for connecting Tako's live-data search to any MCP client. Tools below are the
-  candidate surface derived from the OpenAPI operations; the hosted server is the
-  authoritative tool list.
+  clients:
+  - Claude
+  - ChatGPT
+  - Cursor
+  - VS Code
+notes: Tako operates an official hosted/remote MCP server at https://mcp.tako.com/mcp for connecting Tako's
+  live-data search to any MCP client. Tools below are the candidate surface derived from the OpenAPI operations;
+  the hosted server is the authoritative tool list.
 tools:
-  - name: search
-    description: Fast-pipeline knowledge search returning Tako cards + web results (no LLM synthesis).
-    source_operation: openapi/tako-openapi-original.yml#search
-  - name: answer
-    description: Synthesized, cited answer grounded in Tako results and/or web.
-    source_operation: openapi/tako-openapi-original.yml#answer
-  - name: graph_search
-    description: Resolve a metric or entity in Tako's data graph by name.
-    source_operation: openapi/tako-openapi-original.yml#graphSearch
-  - name: graph_related
-    description: Explore a graph node's related nodes and metrics.
-    source_operation: openapi/tako-openapi-original.yml#graphRelated
-  - name: contents
-    description: Download the CSV / extracted text behind a card or web result.
-    source_operation: openapi/tako-openapi-original.yml#contents
+- name: search
+  description: Fast-pipeline knowledge search returning Tako cards + web results (no LLM synthesis).
+  source_operation: openapi/tako-openapi-original.yml#search
+- name: answer
+  description: Synthesized, cited answer grounded in Tako results and/or web.
+  source_operation: openapi/tako-openapi-original.yml#answer
+- name: graph_search
+  description: Resolve a metric or entity in Tako's data graph by name.
+  source_operation: openapi/tako-openapi-original.yml#graphSearch
+- name: graph_related
+  description: Explore a graph node's related nodes and metrics.
+  source_operation: openapi/tako-openapi-original.yml#graphRelated
+- name: contents
+  description: Download the CSV / extracted text behind a card or web result.
+  source_operation: openapi/tako-openapi-original.yml#contents
+deployment:
+  mode: remote
+  endpoint: https://mcp.tako.com/mcp
+  verified: probed
+  probe: live
+  tools: 3
+  checked: '2026-08-12'
+  source: catalog MCP census
