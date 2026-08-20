@@ -41,6 +41,17 @@ created: '2026-07-17'
 modified: '2026-07-21'
 tags:
 - Company
+- Artificial Intelligence
+- Data
+- Search
+- Answer Engine
+- Financial Data
+- Knowledge Graph
+- Agents
+- MCP
+- Data Visualization
+tags_raw:
+- Company
 - AI
 - Data
 - Search
@@ -64,6 +75,8 @@ apis:
   humanURL: https://docs.tako.com
   baseURL: https://tako.com/api
   tags:
+  - Agents
+  tags_raw:
   - agent
   properties:
   - type: OpenAPI
