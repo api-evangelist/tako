@@ -87,7 +87,7 @@ apis:
   humanURL: https://docs.tako.com
   baseURL: https://tako.com/api
   tags:
-  - Agents
+  - agent
   tags_raw:
   - agent
   properties:
@@ -101,6 +101,8 @@ apis:
   humanURL: https://docs.tako.com
   baseURL: https://tako.com/api
   tags:
+  - Tako
+  tags_raw:
   - tako
   properties:
   - type: OpenAPI
