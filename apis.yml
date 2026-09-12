@@ -112,6 +112,8 @@ apis:
   - type: Authentication
     url: authentication/tako-authentication.yml
 common:
+- type: Website
+  url: https://www.tako.com/
 # --- Identity / link-properties ---
 - type: DeveloperPortal
   url: https://docs.tako.com
