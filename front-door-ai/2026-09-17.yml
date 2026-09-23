@@ -1,0 +1,31 @@
+# Front Door AI Index — tako — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: tako
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.tako.com
+  final_host: tako.com
+  ownership: own
+  owner: tako
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 21
+  host_score: 21
+  density: 21.52
+  words: 976
+  tiers:
+    agentic: 10
+    core: 11
+    model: 0
+  ambiguous: 19
+  top_terms:
+    agent: 19
+    AI: 10
+    MCP: 4
+    AI agent: 3
+    chatbot: 2
+    LLMs: 1
+    prompts: 1

@@ -1,17 +1,17 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Knowledge Search agent API
+  title: Knowledge Search Agent API
   version: 1.0.0
 servers:
 - url: https://tako.com/api/
   description: Tako Production API Server
 tags:
-- name: agent
+- name: Agent
 paths:
   /v1/agent/answer/runs:
     get:
       tags:
-      - agent
+      - Agent
       summary: List answer agent runs
       description: List the authenticated caller's answer agent runs, newest first. Returns trimmed run summaries. Fetch full detail via GET /v1/agent/answer/runs/{run_id}.
       operationId: listAnswerAgentRuns
@@ -53,7 +53,7 @@ paths:
       - apiKey: []
     post:
       tags:
-      - agent
+      - Agent
       summary: Dispatch an answer agent run
       description: Dispatch an answer agent run. Returns 202 with an AnswerAgentRun object. Poll GET /v1/agent/answer/runs/{run_id} until status is 'completed' or 'failed'.
       operationId: createAnswerAgentRun
@@ -113,7 +113,7 @@ paths:
   /v1/agent/answer/runs/{run_id}:
     get:
       tags:
-      - agent
+      - Agent
       summary: Poll an answer agent run
       description: Retrieve the current state of an answer agent run. Poll until status is 'completed' or 'failed'. The response includes result when status is 'completed'.
       operationId: getAnswerAgentRun
@@ -164,7 +164,7 @@ paths:
   /v1/agent/retrieval/runs:
     get:
       tags:
-      - agent
+      - Agent
       summary: List retrieval agent runs
       description: List the authenticated caller's retrieval agent runs, newest first. Returns trimmed run summaries. Fetch full detail via GET /v1/agent/retrieval/runs/{run_id}.
       operationId: listRetrievalAgentRuns
@@ -206,7 +206,7 @@ paths:
       - apiKey: []
     post:
       tags:
-      - agent
+      - Agent
       summary: Dispatch a retrieval agent run
       description: Dispatch a retrieval agent run. Returns 202 with a RetrievalAgentRun object. Poll GET /v1/agent/retrieval/runs/{run_id} until status is 'completed' or 'failed'.
       operationId: createRetrievalAgentRun
@@ -266,7 +266,7 @@ paths:
   /v1/agent/retrieval/runs/{run_id}:
     get:
       tags:
-      - agent
+      - Agent
       summary: Poll a retrieval agent run
       description: Retrieve the current state of a retrieval agent run. Poll until status is 'completed' or 'failed'. The response includes result when status is 'completed'.
       operationId: getRetrievalAgentRun
@@ -316,187 +316,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    TextEvent:
-      properties:
-        kind:
-          type: string
-          const: text
-          title: Kind
-          default: text
-        id:
-          type: string
-          title: Id
-        delta:
-          type: string
-          title: Delta
-        done:
-          type: boolean
-          title: Done
-          default: false
-      type: object
-      required:
-      - id
-      - delta
-      title: TextEvent
-    KnowledgeCardMethodology:
-      properties:
-        methodology_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Methodology Name
-          description: The name of the methodology
-          examples:
-          - Where the Data Comes From - S&P Global
-        methodology_description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Methodology Description
-          description: 'A concise, one-sentence summary of the methodology: the source and what it measures. When no concise summary is available, this carries the full methodology text.'
-          examples:
-          - Financial metrics standardized by S&P Global from company regulatory filings, press releases, and restatements.
-      type: object
-      required:
-      - methodology_name
-      - methodology_description
-      title: KnowledgeCardMethodology
-    ContentsFormat:
-      type: string
-      enum:
-      - csv
-      - json_records
-      - json_compact
-      title: ContentsFormat
-      description: 'Serialization of tabular (Tako card) data. Web content is always raw text
-
-        and carries no content format (content_format is null).'
-    RetrievalAgentResult:
-      properties:
-        answer:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Answer
-        cards:
-          items:
-            $ref: '#/components/schemas/TakoCard'
-          type: array
-          title: Cards
-        citations:
-          items:
-            $ref: '#/components/schemas/AgentAnswerCitation'
-          type: array
-          title: Citations
-        metadata:
-          anyOf:
-          - $ref: '#/components/schemas/AgentAnswerMetadata'
-          - type: 'null'
-        structured_output:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Structured Output
-          description: Caller-shaped structured output (present only if the request carried output_schema and status is not 'failed'). Dataset slots contain a TakoDataset envelope of exact retrieved rows, or null when the agent left them unfilled.
-        structured_output_status:
-          anyOf:
-          - $ref: '#/components/schemas/StructuredOutputStatus'
-          - type: 'null'
-          description: complete | partial | failed. Present when the request supplied output_schema and the run reached the finalize step. It can be absent when the whole run failed or timed out before finalize; the run-level status and error convey that, and the echoed request.output_schema still identifies the run as structured.
-        structured_output_citations:
-          anyOf:
-          - additionalProperties:
-              items:
-                type: integer
-              type: array
-            type: object
-          - type: 'null'
-          title: Structured Output Citations
-          description: Best-effort field-path -> citation-index map joining the top-level citations registry (same [n] index space as the answer). Absent when status is 'failed'.
-        unfilled_fields:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Unfilled Fields
-          description: Dot-separated paths of unfilled dataset slots; present only if status is 'partial'.
-        structured_output_error:
-          anyOf:
-          - $ref: '#/components/schemas/ErrorObject'
-          - type: 'null'
-          description: Why structured output failed; present only if status is 'failed'.
-        request_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Request Id
-      type: object
-      title: RetrievalAgentResult
-      description: 'Final retrieval-agent output. answer is markdown prose with [n]
-
-        citation markers. cards reuse the sibling TakoCard. citations is the
-
-        unified top-level registry for data and web sources — there is no
-
-        web_results field. metadata carries definitions, assumptions, and
-
-        methodology. The structured_output_* fields carry the caller-shaped
-
-        output_schema result; they are present only if the request supplied
-
-        output_schema. See each field''s description for the exact presence
-
-        rules.'
-    RetrievalAgentRun:
-      properties:
-        run_id:
-          type: string
-          title: Run Id
-        object:
-          type: string
-          const: agent.retrieval.run
-          title: Object
-          default: agent.retrieval.run
-        thread_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Thread Id
-        status:
-          $ref: '#/components/schemas/AgentRunStatus'
-        created_at:
-          type: string
-          title: Created At
-        completed_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Completed At
-        result:
-          anyOf:
-          - $ref: '#/components/schemas/RetrievalAgentResult'
-          - type: 'null'
-        error:
-          anyOf:
-          - $ref: '#/components/schemas/ErrorObject'
-          - type: 'null'
-        usage:
-          anyOf:
-          - $ref: '#/components/schemas/Usage'
-          - type: 'null'
-        request:
-          anyOf:
-          - $ref: '#/components/schemas/RetrievalAgentRunRequest'
-          - type: 'null'
-      type: object
-      required:
-      - run_id
-      - status
-      - created_at
-      title: RetrievalAgentRun
-      description: The retrieval-agent run resource returned by dispatch (202) and poll (GET).
     AgentAnswerDefinition:
       properties:
         term:
@@ -515,43 +334,42 @@ components:
       - term
       - definition
       title: AgentAnswerDefinition
-    AgentAnswerMetadata:
+    ToolErrorEvent:
       properties:
-        citations:
+        kind:
+          type: string
+          const: tool_error
+          title: Kind
+          default: tool_error
+        id:
+          type: string
+          title: Id
+        tool:
+          type: string
+          title: Tool
+        error:
+          type: string
+          title: Error
+        parent_id:
           anyOf:
-          - items:
-              $ref: '#/components/schemas/AgentAnswerCitation'
-            type: array
+          - type: string
           - type: 'null'
-          title: Citations
-        definitions:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/AgentAnswerDefinition'
-            type: array
-          - type: 'null'
-          title: Definitions
-        assumptions:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/AgentAnswerAssumption'
-            type: array
-          - type: 'null'
-          title: Assumptions
-        methodology:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/AgentAnswerMethodologyNote'
-            type: array
-          - type: 'null'
-          title: Methodology
+          title: Parent Id
       type: object
-      title: AgentAnswerMetadata
-      description: 'Supplementary answer metadata. All fields are optional — population
-
-        varies by effort and engine (low fills citations only today). Tako adds
-
-        new components here additively.'
+      required:
+      - id
+      - tool
+      - error
+      title: ToolErrorEvent
+    HeartbeatEvent:
+      properties:
+        kind:
+          type: string
+          const: heartbeat
+          title: Kind
+          default: heartbeat
+      type: object
+      title: HeartbeatEvent
     ExportPricing:
       properties:
         baseline_usd:
@@ -586,797 +404,6 @@ components:
         row_cpm_usd is the card-level total (sum of the card''s distinct priced sources''
 
         per-1,000-row rate); no per-source breakdown.'
-    AgentRunStatus:
-      type: string
-      enum:
-      - queued
-      - running
-      - completed
-      - failed
-      title: AgentRunStatus
-    HeartbeatEvent:
-      properties:
-        kind:
-          type: string
-          const: heartbeat
-          title: Kind
-          default: heartbeat
-      type: object
-      title: HeartbeatEvent
-    SubagentEvent:
-      properties:
-        kind:
-          type: string
-          const: subagent
-          title: Kind
-          default: subagent
-        agent_id:
-          type: string
-          title: Agent Id
-        subagent_type:
-          type: string
-          title: Subagent Type
-        parent_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Parent Id
-        event:
-          type: string
-          enum:
-          - dispatch
-          - complete
-          title: Event
-      type: object
-      required:
-      - agent_id
-      - subagent_type
-      - event
-      title: SubagentEvent
-    TakoDatasetColumn:
-      properties:
-        name:
-          type: string
-          title: Name
-          description: Column name.
-        type:
-          $ref: '#/components/schemas/TakoDatasetColumnType'
-          description: 'Logical column type: ''string'', ''number'', ''boolean'', ''date'', or ''datetime''. Temporal cells are ISO-8601 strings.'
-      type: object
-      required:
-      - name
-      - type
-      title: TakoDatasetColumn
-      description: Typed header entry; `type` is the JSON-facing column type.
-    GraphNodeType:
-      type: string
-      enum:
-      - metric
-      - entity
-      title: GraphNodeType
-    AgentOutputSettings:
-      properties:
-        image_dark_mode:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Image Dark Mode
-          description: Render card preview images in dark mode. Omit to use the default (dark).
-      type: object
-      title: AgentOutputSettings
-    AnswerAgentEffort:
-      type: string
-      enum:
-      - medium
-      title: AnswerAgentEffort
-      description: 'Effort taxonomy for the Answer Agent (POST /v1/agent/answer/runs).
-
-
-        The Answer Agent shares the effort vocabulary with the Retrieval Agent,
-
-        but only ''medium'' is available today. Unsupported values return 400.
-
-        Effort does not select an engine; it is a forward-compatible quality and
-
-        pricing control.'
-    RetrievalAgentRunSummary:
-      properties:
-        run_id:
-          type: string
-          title: Run Id
-        status:
-          $ref: '#/components/schemas/AgentRunStatus'
-        created_at:
-          type: string
-          title: Created At
-        completed_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Completed At
-        thread_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Thread Id
-        usage:
-          anyOf:
-          - $ref: '#/components/schemas/Usage'
-          - type: 'null'
-        object:
-          type: string
-          const: agent.retrieval.run
-          title: Object
-          default: agent.retrieval.run
-      type: object
-      required:
-      - run_id
-      - status
-      - created_at
-      title: RetrievalAgentRunSummary
-    ToolCallEvent:
-      properties:
-        kind:
-          type: string
-          const: tool_call
-          title: Kind
-          default: tool_call
-        id:
-          type: string
-          title: Id
-        tool:
-          type: string
-          title: Tool
-        status_message:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Status Message
-        parent_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Parent Id
-        done:
-          type: boolean
-          title: Done
-          default: false
-      type: object
-      required:
-      - id
-      - tool
-      title: ToolCallEvent
-    UsageData:
-      properties:
-        cost_usd:
-          type: number
-          title: Cost Usd
-          description: USD cost of the inline data delivered in the response.
-        datasets:
-          type: integer
-          title: Datasets
-          description: Number of billed data units (datasets) included in the response.
-      type: object
-      required:
-      - cost_usd
-      - datasets
-      title: UsageData
-      description: 'The cost and quantity of inline data delivered in the response: the
-
-        agent per-dataset surcharge, the search and answer include_contents
-
-        charge, or the contents per-item cost. `datasets` is the count of billed
-
-        data units. Absent when the surface did not or cannot emit inline data
-
-        (for example, the answer agent).'
-    TakoCardSource:
-      properties:
-        source_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source Name
-          description: The name of the source
-          examples:
-          - S&P Global
-          - The World Bank
-        source_description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source Description
-          description: The description of the source
-        source_index:
-          $ref: '#/components/schemas/TakoSourceIndex'
-          description: The index of the source
-          examples:
-          - data
-          - web
-        url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Url
-          description: The URL of the source
-          examples:
-          - https://xignite.com
-        source_text:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source Text
-          description: Raw excerpts retrieved from the source page — the unmodified web content that grounded the answer. Present for WEB sources; null for DATA sources.
-      type: object
-      required:
-      - source_index
-      title: TakoCardSource
-      description: 'A source that backs a TakoCard on the SDK surfaces. It uses the
-
-        {data, web} TakoSourceIndex taxonomy.'
-    Usage:
-      properties:
-        total_cost_usd:
-          type: number
-          title: Total Cost Usd
-          description: Total quoted USD cost of this request. Sum of compute cost and data cost.
-        compute:
-          anyOf:
-          - $ref: '#/components/schemas/UsageCompute'
-          - type: 'null'
-          description: Compute cost breakdown. Present only on surfaces with a compute step (absent for contents).
-        data:
-          anyOf:
-          - $ref: '#/components/schemas/UsageData'
-          - type: 'null'
-          description: Inline-data cost breakdown. Present only when the surface emitted billable inline data.
-      type: object
-      required:
-      - total_cost_usd
-      title: Usage
-      description: 'Usage for one metered request. `total_cost_usd` is always present (the
-
-        total quoted charge). `compute` and `data` are the additive breakdown;
-
-        each appears only where it applies. total_cost_usd always equals the sum
-
-        of the components that appear.'
-    UsageCompute:
-      properties:
-        cost_usd:
-          type: number
-          title: Cost Usd
-          description: USD cost of running the operation.
-      type: object
-      required:
-      - cost_usd
-      title: UsageCompute
-      description: 'The cost of running the operation. Absent on surfaces with no compute
-
-        step (contents).'
-    ReasoningEvent:
-      properties:
-        kind:
-          type: string
-          const: reasoning
-          title: Kind
-          default: reasoning
-        id:
-          type: string
-          title: Id
-        delta:
-          type: string
-          title: Delta
-        done:
-          type: boolean
-          title: Done
-          default: false
-      type: object
-      required:
-      - id
-      - delta
-      title: ReasoningEvent
-    TakoDatasetColumnType:
-      type: string
-      enum:
-      - string
-      - number
-      - boolean
-      - date
-      - datetime
-      title: TakoDatasetColumnType
-      description: 'Logical column type declared in a TakoDataset header. Temporal cells
-
-        are ISO-8601 strings. Each column declares ''date'' or ''datetime'' on its
-
-        own: a temporal column whose non-null values are all timezone-naive
-
-        midnights declares ''date''.'
-    ToolRetryEvent:
-      properties:
-        kind:
-          type: string
-          const: tool_retry
-          title: Kind
-          default: tool_retry
-        id:
-          type: string
-          title: Id
-        tool:
-          type: string
-          title: Tool
-        error:
-          type: string
-          title: Error
-        elapsed_ms:
-          type: integer
-          title: Elapsed Ms
-          default: 0
-        parent_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Parent Id
-      type: object
-      required:
-      - id
-      - tool
-      - error
-      title: ToolRetryEvent
-    StreamResetEvent:
-      properties:
-        kind:
-          type: string
-          const: stream_reset
-          title: Kind
-          default: stream_reset
-      type: object
-      title: StreamResetEvent
-    AnswerAgentRunRequest:
-      properties:
-        query:
-          type: string
-          title: Query
-          description: Natural-language request for the answer agent.
-          examples:
-          - How have American Airlines' margins held up against fuel shocks?
-        thread_id:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Thread Id
-          description: Existing thread to continue (follow-up). Omit to start a new thread.
-        effort:
-          $ref: '#/components/schemas/AnswerAgentEffort'
-          description: Answer-agent effort. Only 'medium' is currently supported.
-          default: medium
-        source_indexes:
-          items:
-            type: string
-            enum:
-            - data
-            - web
-          type: array
-          title: Source Indexes
-          description: 'Which sources the agent may use: ''data'' (curated knowledge), ''web'' (open-web search), or both. Defaults to [''data'', ''web'']. Tako accepts the legacy value ''tako'' as a synonym for ''data''.'
-          examples:
-          - - data
-          - - web
-          - - data
-            - web
-        locale:
-          type: string
-          title: Locale
-          description: BCP-47 locale. Drives the language of the agent's answer and the locale used when rendering card preview images. Defaults to en-US.
-          default: en-US
-        timezone:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Timezone
-          description: IANA timezone (for example, 'America/New_York'). The agent uses it to render dates and times in card preview images. It does not affect the returned data.
-        output_settings:
-          anyOf:
-          - $ref: '#/components/schemas/AgentOutputSettings'
-          - type: 'null'
-          description: Settings that control the response and rendering.
-      type: object
-      required:
-      - query
-      title: AnswerAgentRunRequest
-      description: 'Request body for POST /v1/agent/answer/runs.
-
-
-        Frozen contract: no output_schema, no structured outputs, and no inline
-
-        data — ever. Cards are the only data-export path (via /v1/contents).'
-    RetrievalAgentRunRequest:
-      properties:
-        query:
-          type: string
-          title: Query
-          description: Natural-language data-retrieval request for the retrieval agent.
-          examples:
-          - S&P 500 semiconductor companies' 2024 revenue and YoY growth
-        thread_id:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Thread Id
-          description: Existing thread to continue (follow-up). Omit to start a new thread.
-        effort:
-          $ref: '#/components/schemas/RetrievalAgentEffort'
-          description: Retrieval-agent effort. Only 'medium' is currently supported.
-          default: medium
-        source_indexes:
-          items:
-            type: string
-            enum:
-            - data
-            - web
-          type: array
-          title: Source Indexes
-          description: 'Which sources the agent may use: ''data'' (curated knowledge), ''web'' (open-web search), or both. Defaults to [''data'', ''web'']. Tako accepts the legacy value ''tako'' as a synonym for ''data''.'
-          examples:
-          - - data
-          - - web
-          - - data
-            - web
-        cards:
-          type: boolean
-          title: Cards
-          description: 'Whether the agent may build visualization cards. The default is true and permissive: the agent may build cards, but it does not have to (a completed run with no cards is legitimate). Set false to suppress card building entirely.'
-          default: true
-        output_schema:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Output Schema
-          description: 'JSON Schema for structured output. The agent writes the synthesized fields. Dataset slots (marked with x-tako-dataset: true) receive exact retrieved rows as a TakoDataset. Supported subset: the object, array, string, number, integer, and boolean types, plus enum, required, and description. Caps: 16KB, depth 5, 64 properties, 4 dataset slots. Violations return 400 output_schema_invalid.'
-        locale:
-          type: string
-          title: Locale
-          description: BCP-47 locale. Drives the language of the agent's answer and the locale used when rendering card preview images. Defaults to en-US.
-          default: en-US
-        timezone:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Timezone
-          description: IANA timezone (for example, 'America/New_York'). The agent uses it to render dates and times in card preview images. It does not affect the returned data.
-        output_settings:
-          anyOf:
-          - $ref: '#/components/schemas/AgentOutputSettings'
-          - type: 'null'
-          description: Settings that control the response and rendering.
-      type: object
-      required:
-      - query
-      title: RetrievalAgentRunRequest
-      description: Request body for POST /v1/agent/retrieval/runs.
-    TakoDatasetSource:
-      properties:
-        name:
-          type: string
-          title: Name
-          description: Human-readable source name (e.g. 'FRED', 'S&P Global').
-        index:
-          type: string
-          enum:
-          - data
-          - web
-          title: Index
-          description: 'Source index the rows came from: ''data'' (Tako) or ''web''.'
-          default: data
-      type: object
-      required:
-      - name
-      title: TakoDatasetSource
-      description: 'Per-dataset provenance entry. `index` names the source index, not a
-
-        citation display number. It is "data" for every dataset today — web
-
-        content never fills a dataset slot.'
-    AnswerAgentRunList:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/AnswerAgentRunSummary'
-          type: array
-          title: Data
-        has_more:
-          type: boolean
-          title: Has More
-          default: false
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-      type: object
-      required:
-      - data
-      title: AnswerAgentRunList
-      description: 'List envelope for GET /v1/agent/answer/runs. The shape follows the
-
-        OpenAI and Exa list convention.'
-    ErrorObject:
-      properties:
-        code:
-          type: string
-          title: Code
-        message:
-          type: string
-          title: Message
-      type: object
-      required:
-      - code
-      - message
-      title: ErrorObject
-    AnswerAgentResultEvent:
-      properties:
-        kind:
-          type: string
-          const: agent_result
-          title: Kind
-          default: agent_result
-        id:
-          type: string
-          title: Id
-        data:
-          $ref: '#/components/schemas/AnswerAgentResult'
-      type: object
-      required:
-      - id
-      - data
-      title: AnswerAgentResultEvent
-    RetrievalAgentRunList:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/RetrievalAgentRunSummary'
-          type: array
-          title: Data
-        has_more:
-          type: boolean
-          title: Has More
-          default: false
-        next_cursor:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Next Cursor
-      type: object
-      required:
-      - data
-      title: RetrievalAgentRunList
-      description: 'List envelope for GET /v1/agent/retrieval/runs. The shape follows the
-
-        OpenAI and Exa list convention.'
-    AnswerAgentRunSummary:
-      properties:
-        run_id:
-          type: string
-          title: Run Id
-        status:
-          $ref: '#/components/schemas/AgentRunStatus'
-        created_at:
-          type: string
-          title: Created At
-        completed_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Completed At
-        thread_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Thread Id
-        usage:
-          anyOf:
-          - $ref: '#/components/schemas/Usage'
-          - type: 'null'
-        object:
-          type: string
-          const: agent.run
-          title: Object
-          default: agent.run
-      type: object
-      required:
-      - run_id
-      - status
-      - created_at
-      title: AnswerAgentRunSummary
-    TakoDataset:
-      properties:
-        columns:
-          items:
-            $ref: '#/components/schemas/TakoDatasetColumn'
-          type: array
-          title: Columns
-          description: Ordered column headers (name + type), one per position in every row.
-        rows:
-          items:
-            items:
-              anyOf:
-              - type: string
-              - type: number
-              - type: integer
-              - type: boolean
-              - type: 'null'
-            type: array
-          type: array
-          title: Rows
-          description: Row data as positional cell arrays aligned to `columns` order. Cells are string/number/boolean/null; nulls are preserved, never coerced.
-        total_rows:
-          type: integer
-          title: Total Rows
-          description: True total number of rows in the underlying data, before any truncation.
-        truncated:
-          type: boolean
-          title: Truncated
-          description: True when `rows` was capped and total_rows exceeds the number returned.
-        ref:
-          type: string
-          title: Ref
-          description: Source URL the dataset was derived from (e.g. the Tako card URL).
-        sources:
-          items:
-            $ref: '#/components/schemas/TakoDatasetSource'
-          type: array
-          title: Sources
-          description: 'Provenance for the dataset: the sources the rows were drawn from.'
-        provenance:
-          type: string
-          enum:
-          - query
-          - web_extraction
-          title: Provenance
-          description: 'How the rows were produced: ''query'' (Tako data) or ''web_extraction''.'
-          default: query
-      type: object
-      required:
-      - columns
-      - rows
-      - total_rows
-      - truncated
-      - ref
-      - sources
-      title: TakoDataset
-      description: 'The dataset-slot envelope: exact retrieved rows as positional arrays
-
-        in `columns` order. The rows come directly from the data source; the LLM
-
-        never transcribes them.'
-    StructuredOutputStatus:
-      type: string
-      enum:
-      - complete
-      - partial
-      - failed
-      title: StructuredOutputStatus
-      description: Terminal status of the structured-output channel.
-    ToolErrorEvent:
-      properties:
-        kind:
-          type: string
-          const: tool_error
-          title: Kind
-          default: tool_error
-        id:
-          type: string
-          title: Id
-        tool:
-          type: string
-          title: Tool
-        error:
-          type: string
-          title: Error
-        parent_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Parent Id
-      type: object
-      required:
-      - id
-      - tool
-      - error
-      title: ToolErrorEvent
-    AnswerAgentRun:
-      properties:
-        run_id:
-          type: string
-          title: Run Id
-        object:
-          type: string
-          const: agent.run
-          title: Object
-          default: agent.run
-        thread_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Thread Id
-        status:
-          $ref: '#/components/schemas/AgentRunStatus'
-        created_at:
-          type: string
-          title: Created At
-        completed_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Completed At
-        result:
-          anyOf:
-          - $ref: '#/components/schemas/AnswerAgentResult'
-          - type: 'null'
-        error:
-          anyOf:
-          - $ref: '#/components/schemas/ErrorObject'
-          - type: 'null'
-        usage:
-          anyOf:
-          - $ref: '#/components/schemas/Usage'
-          - type: 'null'
-        request:
-          anyOf:
-          - $ref: '#/components/schemas/AnswerAgentRunRequest'
-          - type: 'null'
-      type: object
-      required:
-      - run_id
-      - status
-      - created_at
-      title: AnswerAgentRun
-      description: The answer-agent run resource returned by dispatch (202) and poll (GET).
-    AgentAnswerAssumption:
-      properties:
-        title:
-          type: string
-          title: Title
-        description:
-          type: string
-          title: Description
-        category:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Category
-        source_ref:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Source Ref
-      type: object
-      required:
-      - title
-      - description
-      title: AgentAnswerAssumption
-    TakoSourceIndex:
-      type: string
-      enum:
-      - data
-      - web
-      title: TakoSourceIndex
-      description: 'Public source taxonomy for the SDK card surfaces (v3 search, v1 answer,
-
-        agent). It is symmetric with the request taxonomy {data, web}.'
     AnswerAgentResult:
       properties:
         answer:
@@ -1416,56 +443,21 @@ components:
         output, and no web_results — ever. A prose-only result (empty cards) is
 
         legitimate.'
-    RunSummaryEvent:
-      properties:
-        kind:
-          type: string
-          const: run_summary
-          title: Kind
-          default: run_summary
-        status:
-          $ref: '#/components/schemas/AgentRunStatus'
-        created_at:
-          type: string
-          title: Created At
-        completed_at:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Completed At
-        error:
-          anyOf:
-          - $ref: '#/components/schemas/ErrorObject'
-          - type: 'null'
-        usage:
-          anyOf:
-          - $ref: '#/components/schemas/Usage'
-          - type: 'null'
-      type: object
-      required:
-      - status
-      - created_at
-      title: RunSummaryEvent
-      description: 'Terminal run metadata. The stream emits it once, immediately before
-
-        stream_done. It mirrors the GET-poll run fields that the stream otherwise
-
-        lacks; the result stays in the agent_result event. status, created_at,
-
-        and completed_at are always present. error appears only on failure. usage
-
-        appears only on metered (pay-as-you-go) runs and is null otherwise.
-
-        agent_result plus run_summary equals the GET poll object.
+    AnswerAgentEffort:
+      type: string
+      enum:
+      - medium
+      title: AnswerAgentEffort
+      description: 'Effort taxonomy for the Answer Agent (POST /v1/agent/answer/runs).
 
 
-        It carries the same envelope `seq` as the stream_done that follows it (it
+        The Answer Agent shares the effort vocabulary with the Retrieval Agent,
 
-        has no seq of its own), and the stream suppresses its SSE `id:`, so it
+        but only ''medium'' is available today. Unsupported values return 400.
 
-        advances no resume cursor. Identify it by `kind`; never assume `seq` is
+        Effort does not select an engine; it is a forward-compatible quality and
 
-        unique per frame.'
+        pricing control.'
     TakoCard:
       properties:
         card_id:
@@ -1569,29 +561,421 @@ components:
       description: 'A Tako knowledge card on the search and answer surfaces. It carries a
 
         `content` download descriptor.'
-    DataFreshness:
+    DataPipelineAnswerEvent:
       properties:
-        data_as_of:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Data As Of
-          description: Date of the most recent observation in the card's data, as an ISO date (YYYY-MM-DD). Null for card types without a coverage date.
-          examples:
-          - '2026-06-30'
-        last_updated:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Last Updated
-          description: Date Tako last refreshed the underlying data, as an ISO date (YYYY-MM-DD).
-          examples:
-          - '2026-07-14'
+        kind:
+          type: string
+          const: data_pipeline_answer
+          title: Kind
+          default: data_pipeline_answer
+        id:
+          type: string
+          title: Id
+        chart_refs:
+          items:
+            type: string
+          type: array
+          title: Chart Refs
       type: object
-      title: DataFreshness
-      description: 'When the card''s data was last observed and last refreshed. Either field
+      required:
+      - id
+      title: DataPipelineAnswerEvent
+      description: 'Signals that the data pipeline produced one or more charts for the
 
-        may be null when that date isn''t available for the card type.'
+        answer. It carries only chart references. The answer text streams in
+
+        `text` events, and the structured result arrives in the terminal
+
+        `agent_result` event, not here.'
+    AnswerAgentStreamEnvelope:
+      properties:
+        seq:
+          type: integer
+          minimum: 0.0
+          title: Seq
+        run_id:
+          type: string
+          title: Run Id
+        thread_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Thread Id
+        category:
+          $ref: '#/components/schemas/StreamCategory'
+        block:
+          oneOf:
+          - $ref: '#/components/schemas/ToolCallEvent'
+          - $ref: '#/components/schemas/ToolResultEvent'
+          - $ref: '#/components/schemas/ToolErrorEvent'
+          - $ref: '#/components/schemas/ToolRetryEvent'
+          - $ref: '#/components/schemas/StatusEvent'
+          - $ref: '#/components/schemas/SubagentEvent'
+          - $ref: '#/components/schemas/ReasoningEvent'
+          - $ref: '#/components/schemas/TextEvent'
+          - $ref: '#/components/schemas/DataPipelineAnswerEvent'
+          - $ref: '#/components/schemas/AnswerAgentResultEvent'
+          - $ref: '#/components/schemas/RunSummaryEvent'
+          - $ref: '#/components/schemas/HeartbeatEvent'
+          - $ref: '#/components/schemas/StreamResetEvent'
+          - $ref: '#/components/schemas/StreamDoneEvent'
+          title: Block
+          discriminator:
+            propertyName: kind
+            mapping:
+              agent_result: '#/components/schemas/AnswerAgentResultEvent'
+              data_pipeline_answer: '#/components/schemas/DataPipelineAnswerEvent'
+              heartbeat: '#/components/schemas/HeartbeatEvent'
+              reasoning: '#/components/schemas/ReasoningEvent'
+              run_summary: '#/components/schemas/RunSummaryEvent'
+              status: '#/components/schemas/StatusEvent'
+              stream_done: '#/components/schemas/StreamDoneEvent'
+              stream_reset: '#/components/schemas/StreamResetEvent'
+              subagent: '#/components/schemas/SubagentEvent'
+              text: '#/components/schemas/TextEvent'
+              tool_call: '#/components/schemas/ToolCallEvent'
+              tool_error: '#/components/schemas/ToolErrorEvent'
+              tool_result: '#/components/schemas/ToolResultEvent'
+              tool_retry: '#/components/schemas/ToolRetryEvent'
+      type: object
+      required:
+      - seq
+      - run_id
+      - category
+      - block
+      title: AnswerAgentStreamEnvelope
+      description: 'Public SSE envelope for the Answer Agent run stream. Identical wire shape
+
+        to AgentStreamEnvelope; the only difference is the terminal agent_result
+
+        block carries AnswerAgentResult (top-level citations, no web_results).'
+    StreamDoneEvent:
+      properties:
+        kind:
+          type: string
+          const: stream_done
+          title: Kind
+          default: stream_done
+      type: object
+      title: StreamDoneEvent
+    KnowledgeCardMethodology:
+      properties:
+        methodology_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Methodology Name
+          description: The name of the methodology
+          examples:
+          - Where the Data Comes From - S&P Global
+        methodology_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Methodology Description
+          description: 'A concise, one-sentence summary of the methodology: the source and what it measures. When no concise summary is available, this carries the full methodology text.'
+          examples:
+          - Financial metrics standardized by S&P Global from company regulatory filings, press releases, and restatements.
+      type: object
+      required:
+      - methodology_name
+      - methodology_description
+      title: KnowledgeCardMethodology
+    SubagentEvent:
+      properties:
+        kind:
+          type: string
+          const: subagent
+          title: Kind
+          default: subagent
+        agent_id:
+          type: string
+          title: Agent Id
+        subagent_type:
+          type: string
+          title: Subagent Type
+        parent_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Parent Id
+        event:
+          type: string
+          enum:
+          - dispatch
+          - complete
+          title: Event
+      type: object
+      required:
+      - agent_id
+      - subagent_type
+      - event
+      title: SubagentEvent
+    StreamCategory:
+      type: string
+      enum:
+      - content
+      - activity
+      - control
+      title: StreamCategory
+    TakoCardNode:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Opaque, human-friendly public id (<name-slug>-<token>).
+        type:
+          $ref: '#/components/schemas/GraphNodeType'
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+      type: object
+      required:
+      - id
+      - type
+      - name
+      title: TakoCardNode
+      description: 'Slim graph node for the search and answer card surface
+
+        (TakoCard.nodes). It is deliberately narrower than GraphNode: it carries
+
+        no `aliases` and no `subtype`. Callers that need the full node resolve
+
+        the id via /beta/graph/node/{id}.'
+    AnswerAgentRunSummary:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+        status:
+          $ref: '#/components/schemas/AgentRunStatus'
+        created_at:
+          type: string
+          title: Created At
+        completed_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Completed At
+        thread_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Thread Id
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/Usage'
+          - type: 'null'
+        object:
+          type: string
+          const: agent.run
+          title: Object
+          default: agent.run
+      type: object
+      required:
+      - run_id
+      - status
+      - created_at
+      title: AnswerAgentRunSummary
+    RetrievalAgentResult:
+      properties:
+        answer:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Answer
+        cards:
+          items:
+            $ref: '#/components/schemas/TakoCard'
+          type: array
+          title: Cards
+        citations:
+          items:
+            $ref: '#/components/schemas/AgentAnswerCitation'
+          type: array
+          title: Citations
+        metadata:
+          anyOf:
+          - $ref: '#/components/schemas/AgentAnswerMetadata'
+          - type: 'null'
+        structured_output:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Structured Output
+          description: Caller-shaped structured output (present only if the request carried output_schema and status is not 'failed'). Dataset slots contain a TakoDataset envelope of exact retrieved rows, or null when the agent left them unfilled.
+        structured_output_status:
+          anyOf:
+          - $ref: '#/components/schemas/StructuredOutputStatus'
+          - type: 'null'
+          description: complete | partial | failed. Present when the request supplied output_schema and the run reached the finalize step. It can be absent when the whole run failed or timed out before finalize; the run-level status and error convey that, and the echoed request.output_schema still identifies the run as structured.
+        structured_output_citations:
+          anyOf:
+          - additionalProperties:
+              items:
+                type: integer
+              type: array
+            type: object
+          - type: 'null'
+          title: Structured Output Citations
+          description: Best-effort field-path -> citation-index map joining the top-level citations registry (same [n] index space as the answer). Absent when status is 'failed'.
+        unfilled_fields:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Unfilled Fields
+          description: Dot-separated paths of unfilled dataset slots; present only if status is 'partial'.
+        structured_output_error:
+          anyOf:
+          - $ref: '#/components/schemas/ErrorObject'
+          - type: 'null'
+          description: Why structured output failed; present only if status is 'failed'.
+        request_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Request Id
+      type: object
+      title: RetrievalAgentResult
+      description: 'Final retrieval-agent output. answer is markdown prose with [n]
+
+        citation markers. cards reuse the sibling TakoCard. citations is the
+
+        unified top-level registry for data and web sources — there is no
+
+        web_results field. metadata carries definitions, assumptions, and
+
+        methodology. The structured_output_* fields carry the caller-shaped
+
+        output_schema result; they are present only if the request supplied
+
+        output_schema. See each field''s description for the exact presence
+
+        rules.'
+    AgentAnswerAssumption:
+      properties:
+        title:
+          type: string
+          title: Title
+        description:
+          type: string
+          title: Description
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+        source_ref:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Source Ref
+      type: object
+      required:
+      - title
+      - description
+      title: AgentAnswerAssumption
+    AnswerAgentRunList:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/AnswerAgentRunSummary'
+          type: array
+          title: Data
+        has_more:
+          type: boolean
+          title: Has More
+          default: false
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+      type: object
+      required:
+      - data
+      title: AnswerAgentRunList
+      description: 'List envelope for GET /v1/agent/answer/runs. The shape follows the
+
+        OpenAI and Exa list convention.'
+    ReasoningEvent:
+      properties:
+        kind:
+          type: string
+          const: reasoning
+          title: Kind
+          default: reasoning
+        id:
+          type: string
+          title: Id
+        delta:
+          type: string
+          title: Delta
+        done:
+          type: boolean
+          title: Done
+          default: false
+      type: object
+      required:
+      - id
+      - delta
+      title: ReasoningEvent
+    RetrievalAgentResultEvent:
+      properties:
+        kind:
+          type: string
+          const: agent_result
+          title: Kind
+          default: agent_result
+        id:
+          type: string
+          title: Id
+        data:
+          $ref: '#/components/schemas/RetrievalAgentResult'
+      type: object
+      required:
+      - id
+      - data
+      title: RetrievalAgentResultEvent
+    KnowledgeCardRelevance:
+      type: string
+      enum:
+      - High
+      - Medium
+      - Low
+      title: KnowledgeCardRelevance
+    StatusEvent:
+      properties:
+        kind:
+          type: string
+          const: status
+          title: Kind
+          default: status
+        message:
+          type: string
+          title: Message
+        parent_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Parent Id
+      type: object
+      required:
+      - message
+      title: StatusEvent
     RetrievalAgentEffort:
       type: string
       enum:
@@ -1605,6 +989,743 @@ components:
         forward compatibility and for parity with AnswerAgentEffort. The values
 
         ''low'' and ''high'' return 400 at validation.'
+    ToolRetryEvent:
+      properties:
+        kind:
+          type: string
+          const: tool_retry
+          title: Kind
+          default: tool_retry
+        id:
+          type: string
+          title: Id
+        tool:
+          type: string
+          title: Tool
+        error:
+          type: string
+          title: Error
+        elapsed_ms:
+          type: integer
+          title: Elapsed Ms
+          default: 0
+        parent_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Parent Id
+      type: object
+      required:
+      - id
+      - tool
+      - error
+      title: ToolRetryEvent
+    ToolResultEvent:
+      properties:
+        kind:
+          type: string
+          const: tool_result
+          title: Kind
+          default: tool_result
+        id:
+          type: string
+          title: Id
+        tool:
+          type: string
+          title: Tool
+        elapsed_ms:
+          type: integer
+          title: Elapsed Ms
+          default: 0
+        link:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Link
+        parent_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Parent Id
+      type: object
+      required:
+      - id
+      - tool
+      title: ToolResultEvent
+    AgentAnswerMetadata:
+      properties:
+        citations:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/AgentAnswerCitation'
+            type: array
+          - type: 'null'
+          title: Citations
+        definitions:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/AgentAnswerDefinition'
+            type: array
+          - type: 'null'
+          title: Definitions
+        assumptions:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/AgentAnswerAssumption'
+            type: array
+          - type: 'null'
+          title: Assumptions
+        methodology:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/AgentAnswerMethodologyNote'
+            type: array
+          - type: 'null'
+          title: Methodology
+      type: object
+      title: AgentAnswerMetadata
+      description: 'Supplementary answer metadata. All fields are optional — population
+
+        varies by effort and engine (low fills citations only today). Tako adds
+
+        new components here additively.'
+    AgentAnswerMethodologyNote:
+      properties:
+        title:
+          type: string
+          title: Title
+        description:
+          type: string
+          title: Description
+      type: object
+      required:
+      - title
+      - description
+      title: AgentAnswerMethodologyNote
+    TakoCardSource:
+      properties:
+        source_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Name
+          description: The name of the source
+          examples:
+          - S&P Global
+          - The World Bank
+        source_description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Description
+          description: The description of the source
+        source_index:
+          $ref: '#/components/schemas/TakoSourceIndex'
+          description: The index of the source
+          examples:
+          - data
+          - web
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+          description: The URL of the source
+          examples:
+          - https://xignite.com
+        source_text:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Text
+          description: Raw excerpts retrieved from the source page — the unmodified web content that grounded the answer. Present for WEB sources; null for DATA sources.
+      type: object
+      required:
+      - source_index
+      title: TakoCardSource
+      description: 'A source that backs a TakoCard on the SDK surfaces. It uses the
+
+        {data, web} TakoSourceIndex taxonomy.'
+    AgentRunStatus:
+      type: string
+      enum:
+      - queued
+      - running
+      - completed
+      - failed
+      title: AgentRunStatus
+    StructuredOutputStatus:
+      type: string
+      enum:
+      - complete
+      - partial
+      - failed
+      title: StructuredOutputStatus
+      description: Terminal status of the structured-output channel.
+    UsageData:
+      properties:
+        cost_usd:
+          type: number
+          title: Cost Usd
+          description: USD cost of the inline data delivered in the response.
+        datasets:
+          type: integer
+          title: Datasets
+          description: Number of billed data units (datasets) included in the response.
+      type: object
+      required:
+      - cost_usd
+      - datasets
+      title: UsageData
+      description: 'The cost and quantity of inline data delivered in the response: the
+
+        agent per-dataset surcharge, the search and answer include_contents
+
+        charge, or the contents per-item cost. `datasets` is the count of billed
+
+        data units. Absent when the surface did not or cannot emit inline data
+
+        (for example, the answer agent).'
+    TakoDataset:
+      properties:
+        columns:
+          items:
+            $ref: '#/components/schemas/TakoDatasetColumn'
+          type: array
+          title: Columns
+          description: Ordered column headers (name + type), one per position in every row.
+        rows:
+          items:
+            items:
+              anyOf:
+              - type: string
+              - type: number
+              - type: integer
+              - type: boolean
+              - type: 'null'
+            type: array
+          type: array
+          title: Rows
+          description: Row data as positional cell arrays aligned to `columns` order. Cells are string/number/boolean/null; nulls are preserved, never coerced.
+        total_rows:
+          type: integer
+          title: Total Rows
+          description: True total number of rows in the underlying data, before any truncation.
+        truncated:
+          type: boolean
+          title: Truncated
+          description: True when `rows` was capped and total_rows exceeds the number returned.
+        ref:
+          type: string
+          title: Ref
+          description: Source URL the dataset was derived from (e.g. the Tako card URL).
+        sources:
+          items:
+            $ref: '#/components/schemas/TakoDatasetSource'
+          type: array
+          title: Sources
+          description: 'Provenance for the dataset: the sources the rows were drawn from.'
+        provenance:
+          type: string
+          enum:
+          - query
+          - web_extraction
+          title: Provenance
+          description: 'How the rows were produced: ''query'' (Tako data) or ''web_extraction''.'
+          default: query
+      type: object
+      required:
+      - columns
+      - rows
+      - total_rows
+      - truncated
+      - ref
+      - sources
+      title: TakoDataset
+      description: 'The dataset-slot envelope: exact retrieved rows as positional arrays
+
+        in `columns` order. The rows come directly from the data source; the LLM
+
+        never transcribes them.'
+    TakoDatasetColumnType:
+      type: string
+      enum:
+      - string
+      - number
+      - boolean
+      - date
+      - datetime
+      title: TakoDatasetColumnType
+      description: 'Logical column type declared in a TakoDataset header. Temporal cells
+
+        are ISO-8601 strings. Each column declares ''date'' or ''datetime'' on its
+
+        own: a temporal column whose non-null values are all timezone-naive
+
+        midnights declares ''date''.'
+    GraphNodeType:
+      type: string
+      enum:
+      - metric
+      - entity
+      title: GraphNodeType
+    TakoSourceIndex:
+      type: string
+      enum:
+      - data
+      - web
+      title: TakoSourceIndex
+      description: 'Public source taxonomy for the SDK card surfaces (v3 search, v1 answer,
+
+        agent). It is symmetric with the request taxonomy {data, web}.'
+    RetrievalAgentRunRequest:
+      properties:
+        query:
+          type: string
+          title: Query
+          description: Natural-language data-retrieval request for the retrieval agent.
+          examples:
+          - S&P 500 semiconductor companies' 2024 revenue and YoY growth
+        thread_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Thread Id
+          description: Existing thread to continue (follow-up). Omit to start a new thread.
+        effort:
+          $ref: '#/components/schemas/RetrievalAgentEffort'
+          description: Retrieval-agent effort. Only 'medium' is currently supported.
+          default: medium
+        source_indexes:
+          items:
+            type: string
+            enum:
+            - data
+            - web
+          type: array
+          title: Source Indexes
+          description: 'Which sources the agent may use: ''data'' (curated knowledge), ''web'' (open-web search), or both. Defaults to [''data'', ''web'']. Tako accepts the legacy value ''tako'' as a synonym for ''data''.'
+          examples:
+          - - data
+          - - web
+          - - data
+            - web
+        cards:
+          type: boolean
+          title: Cards
+          description: 'Whether the agent may build visualization cards. The default is true and permissive: the agent may build cards, but it does not have to (a completed run with no cards is legitimate). Set false to suppress card building entirely.'
+          default: true
+        output_schema:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Output Schema
+          description: 'JSON Schema for structured output. The agent writes the synthesized fields. Dataset slots (marked with x-tako-dataset: true) receive exact retrieved rows as a TakoDataset. Supported subset: the object, array, string, number, integer, and boolean types, plus enum, required, and description. Caps: 16KB, depth 5, 64 properties, 4 dataset slots. Violations return 400 output_schema_invalid.'
+        locale:
+          type: string
+          title: Locale
+          description: BCP-47 locale. Drives the language of the agent's answer and the locale used when rendering card preview images. Defaults to en-US.
+          default: en-US
+        timezone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Timezone
+          description: IANA timezone (for example, 'America/New_York'). The agent uses it to render dates and times in card preview images. It does not affect the returned data.
+        output_settings:
+          anyOf:
+          - $ref: '#/components/schemas/AgentOutputSettings'
+          - type: 'null'
+          description: Settings that control the response and rendering.
+      type: object
+      required:
+      - query
+      title: RetrievalAgentRunRequest
+      description: Request body for POST /v1/agent/retrieval/runs.
+    StreamResetEvent:
+      properties:
+        kind:
+          type: string
+          const: stream_reset
+          title: Kind
+          default: stream_reset
+      type: object
+      title: StreamResetEvent
+    AnswerAgentResultEvent:
+      properties:
+        kind:
+          type: string
+          const: agent_result
+          title: Kind
+          default: agent_result
+        id:
+          type: string
+          title: Id
+        data:
+          $ref: '#/components/schemas/AnswerAgentResult'
+      type: object
+      required:
+      - id
+      - data
+      title: AnswerAgentResultEvent
+    AnswerAgentRun:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+        object:
+          type: string
+          const: agent.run
+          title: Object
+          default: agent.run
+        thread_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Thread Id
+        status:
+          $ref: '#/components/schemas/AgentRunStatus'
+        created_at:
+          type: string
+          title: Created At
+        completed_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Completed At
+        result:
+          anyOf:
+          - $ref: '#/components/schemas/AnswerAgentResult'
+          - type: 'null'
+        error:
+          anyOf:
+          - $ref: '#/components/schemas/ErrorObject'
+          - type: 'null'
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/Usage'
+          - type: 'null'
+        request:
+          anyOf:
+          - $ref: '#/components/schemas/AnswerAgentRunRequest'
+          - type: 'null'
+      type: object
+      required:
+      - run_id
+      - status
+      - created_at
+      title: AnswerAgentRun
+      description: The answer-agent run resource returned by dispatch (202) and poll (GET).
+    ErrorObject:
+      properties:
+        code:
+          type: string
+          title: Code
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - code
+      - message
+      title: ErrorObject
+    AgentOutputSettings:
+      properties:
+        image_dark_mode:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Image Dark Mode
+          description: Render card preview images in dark mode. Omit to use the default (dark).
+      type: object
+      title: AgentOutputSettings
+    AnswerAgentRunRequest:
+      properties:
+        query:
+          type: string
+          title: Query
+          description: Natural-language request for the answer agent.
+          examples:
+          - How have American Airlines' margins held up against fuel shocks?
+        thread_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Thread Id
+          description: Existing thread to continue (follow-up). Omit to start a new thread.
+        effort:
+          $ref: '#/components/schemas/AnswerAgentEffort'
+          description: Answer-agent effort. Only 'medium' is currently supported.
+          default: medium
+        source_indexes:
+          items:
+            type: string
+            enum:
+            - data
+            - web
+          type: array
+          title: Source Indexes
+          description: 'Which sources the agent may use: ''data'' (curated knowledge), ''web'' (open-web search), or both. Defaults to [''data'', ''web'']. Tako accepts the legacy value ''tako'' as a synonym for ''data''.'
+          examples:
+          - - data
+          - - web
+          - - data
+            - web
+        locale:
+          type: string
+          title: Locale
+          description: BCP-47 locale. Drives the language of the agent's answer and the locale used when rendering card preview images. Defaults to en-US.
+          default: en-US
+        timezone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Timezone
+          description: IANA timezone (for example, 'America/New_York'). The agent uses it to render dates and times in card preview images. It does not affect the returned data.
+        output_settings:
+          anyOf:
+          - $ref: '#/components/schemas/AgentOutputSettings'
+          - type: 'null'
+          description: Settings that control the response and rendering.
+      type: object
+      required:
+      - query
+      title: AnswerAgentRunRequest
+      description: 'Request body for POST /v1/agent/answer/runs.
+
+
+        Frozen contract: no output_schema, no structured outputs, and no inline
+
+        data — ever. Cards are the only data-export path (via /v1/contents).'
+    UsageCompute:
+      properties:
+        cost_usd:
+          type: number
+          title: Cost Usd
+          description: USD cost of running the operation.
+      type: object
+      required:
+      - cost_usd
+      title: UsageCompute
+      description: 'The cost of running the operation. Absent on surfaces with no compute
+
+        step (contents).'
+    MetricDefinition:
+      properties:
+        name:
+          type: string
+          title: Name
+          description: The metric's display name
+          examples:
+          - Gross Domestic Product (current US$)
+        definition:
+          type: string
+          title: Definition
+          description: Human-readable definition of the metric
+      type: object
+      required:
+      - name
+      - definition
+      title: MetricDefinition
+      description: 'Definition of a metric shown on a card. Sourced from the metric''s
+
+        ValueType definition — the same text as the in-app methodology ''Metrics''
+
+        tab.'
+    ContentsFormat:
+      type: string
+      enum:
+      - csv
+      - json_records
+      - json_compact
+      title: ContentsFormat
+      description: 'Serialization of tabular (Tako card) data. Web content is always raw text
+
+        and carries no content format (content_format is null).'
+    RetrievalAgentStreamEnvelope:
+      properties:
+        seq:
+          type: integer
+          minimum: 0.0
+          title: Seq
+        run_id:
+          type: string
+          title: Run Id
+        thread_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Thread Id
+        category:
+          $ref: '#/components/schemas/StreamCategory'
+        block:
+          oneOf:
+          - $ref: '#/components/schemas/ToolCallEvent'
+          - $ref: '#/components/schemas/ToolResultEvent'
+          - $ref: '#/components/schemas/ToolErrorEvent'
+          - $ref: '#/components/schemas/ToolRetryEvent'
+          - $ref: '#/components/schemas/StatusEvent'
+          - $ref: '#/components/schemas/SubagentEvent'
+          - $ref: '#/components/schemas/ReasoningEvent'
+          - $ref: '#/components/schemas/TextEvent'
+          - $ref: '#/components/schemas/DataPipelineAnswerEvent'
+          - $ref: '#/components/schemas/RetrievalAgentResultEvent'
+          - $ref: '#/components/schemas/RunSummaryEvent'
+          - $ref: '#/components/schemas/HeartbeatEvent'
+          - $ref: '#/components/schemas/StreamResetEvent'
+          - $ref: '#/components/schemas/StreamDoneEvent'
+          title: Block
+          discriminator:
+            propertyName: kind
+            mapping:
+              agent_result: '#/components/schemas/RetrievalAgentResultEvent'
+              data_pipeline_answer: '#/components/schemas/DataPipelineAnswerEvent'
+              heartbeat: '#/components/schemas/HeartbeatEvent'
+              reasoning: '#/components/schemas/ReasoningEvent'
+              run_summary: '#/components/schemas/RunSummaryEvent'
+              status: '#/components/schemas/StatusEvent'
+              stream_done: '#/components/schemas/StreamDoneEvent'
+              stream_reset: '#/components/schemas/StreamResetEvent'
+              subagent: '#/components/schemas/SubagentEvent'
+              text: '#/components/schemas/TextEvent'
+              tool_call: '#/components/schemas/ToolCallEvent'
+              tool_error: '#/components/schemas/ToolErrorEvent'
+              tool_result: '#/components/schemas/ToolResultEvent'
+              tool_retry: '#/components/schemas/ToolRetryEvent'
+      type: object
+      required:
+      - seq
+      - run_id
+      - category
+      - block
+      title: RetrievalAgentStreamEnvelope
+      description: 'Public SSE envelope for the Retrieval Agent run stream. It has the same
+
+        wire shape as AgentStreamEnvelope. The only difference is that the
+
+        terminal agent_result block carries RetrievalAgentResult (unified
+
+        top-level citations, no web_results), so the SSE terminal matches the
+
+        GET poll result.'
+    RetrievalAgentRunSummary:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+        status:
+          $ref: '#/components/schemas/AgentRunStatus'
+        created_at:
+          type: string
+          title: Created At
+        completed_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Completed At
+        thread_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Thread Id
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/Usage'
+          - type: 'null'
+        object:
+          type: string
+          const: agent.retrieval.run
+          title: Object
+          default: agent.retrieval.run
+      type: object
+      required:
+      - run_id
+      - status
+      - created_at
+      title: RetrievalAgentRunSummary
+    RetrievalAgentRun:
+      properties:
+        run_id:
+          type: string
+          title: Run Id
+        object:
+          type: string
+          const: agent.retrieval.run
+          title: Object
+          default: agent.retrieval.run
+        thread_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Thread Id
+        status:
+          $ref: '#/components/schemas/AgentRunStatus'
+        created_at:
+          type: string
+          title: Created At
+        completed_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Completed At
+        result:
+          anyOf:
+          - $ref: '#/components/schemas/RetrievalAgentResult'
+          - type: 'null'
+        error:
+          anyOf:
+          - $ref: '#/components/schemas/ErrorObject'
+          - type: 'null'
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/Usage'
+          - type: 'null'
+        request:
+          anyOf:
+          - $ref: '#/components/schemas/RetrievalAgentRunRequest'
+          - type: 'null'
+      type: object
+      required:
+      - run_id
+      - status
+      - created_at
+      title: RetrievalAgentRun
+      description: The retrieval-agent run resource returned by dispatch (202) and poll (GET).
+    AnswerAgentMetadata:
+      properties:
+        definitions:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/AgentAnswerDefinition'
+            type: array
+          - type: 'null'
+          title: Definitions
+        assumptions:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/AgentAnswerAssumption'
+            type: array
+          - type: 'null'
+          title: Assumptions
+        methodology:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/AgentAnswerMethodologyNote'
+            type: array
+          - type: 'null'
+          title: Methodology
+      type: object
+      title: AnswerAgentMetadata
+      description: 'Answer-agent metadata. Citations live in the top-level `citations`
+
+        registry, so this carries only definitions, assumptions, and methodology.
+
+        Distinct from the shared AgentAnswerMetadata, which retains citations for
+
+        the legacy AgentResult.'
     ResultContent:
       properties:
         content_format:
@@ -1728,179 +1849,226 @@ components:
         just the quote (`cost`); fetch the content later via the Contents
 
         endpoint.'
-    DataPipelineAnswerEvent:
+    ToolCallEvent:
       properties:
         kind:
           type: string
-          const: data_pipeline_answer
+          const: tool_call
           title: Kind
-          default: data_pipeline_answer
+          default: tool_call
         id:
           type: string
           title: Id
-        chart_refs:
-          items:
-            type: string
-          type: array
-          title: Chart Refs
+        tool:
+          type: string
+          title: Tool
+        status_message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status Message
+        parent_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Parent Id
+        done:
+          type: boolean
+          title: Done
+          default: false
       type: object
       required:
       - id
-      title: DataPipelineAnswerEvent
-      description: 'Signals that the data pipeline produced one or more charts for the
-
-        answer. It carries only chart references. The answer text streams in
-
-        `text` events, and the structured result arrives in the terminal
-
-        `agent_result` event, not here.'
-    StreamCategory:
-      type: string
-      enum:
-      - content
-      - activity
-      - control
-      title: StreamCategory
-    AgentAnswerMethodologyNote:
-      properties:
-        title:
-          type: string
-          title: Title
-        description:
-          type: string
-          title: Description
-      type: object
-      required:
-      - title
-      - description
-      title: AgentAnswerMethodologyNote
-    MetricDefinition:
+      - tool
+      title: ToolCallEvent
+    TakoDatasetColumn:
       properties:
         name:
           type: string
           title: Name
-          description: The metric's display name
-          examples:
-          - Gross Domestic Product (current US$)
-        definition:
-          type: string
-          title: Definition
-          description: Human-readable definition of the metric
+          description: Column name.
+        type:
+          $ref: '#/components/schemas/TakoDatasetColumnType'
+          description: 'Logical column type: ''string'', ''number'', ''boolean'', ''date'', or ''datetime''. Temporal cells are ISO-8601 strings.'
       type: object
       required:
       - name
-      - definition
-      title: MetricDefinition
-      description: 'Definition of a metric shown on a card. Sourced from the metric''s
-
-        ValueType definition — the same text as the in-app methodology ''Metrics''
-
-        tab.'
-    RetrievalAgentStreamEnvelope:
+      - type
+      title: TakoDatasetColumn
+      description: Typed header entry; `type` is the JSON-facing column type.
+    TakoDatasetSource:
       properties:
-        seq:
-          type: integer
-          minimum: 0.0
-          title: Seq
-        run_id:
+        name:
           type: string
-          title: Run Id
-        thread_id:
+          title: Name
+          description: Human-readable source name (e.g. 'FRED', 'S&P Global').
+        index:
+          type: string
+          enum:
+          - data
+          - web
+          title: Index
+          description: 'Source index the rows came from: ''data'' (Tako) or ''web''.'
+          default: data
+      type: object
+      required:
+      - name
+      title: TakoDatasetSource
+      description: 'Per-dataset provenance entry. `index` names the source index, not a
+
+        citation display number. It is "data" for every dataset today — web
+
+        content never fills a dataset slot.'
+    Usage:
+      properties:
+        total_cost_usd:
+          type: number
+          title: Total Cost Usd
+          description: Total quoted USD cost of this request. Sum of compute cost and data cost.
+        compute:
+          anyOf:
+          - $ref: '#/components/schemas/UsageCompute'
+          - type: 'null'
+          description: Compute cost breakdown. Present only on surfaces with a compute step (absent for contents).
+        data:
+          anyOf:
+          - $ref: '#/components/schemas/UsageData'
+          - type: 'null'
+          description: Inline-data cost breakdown. Present only when the surface emitted billable inline data.
+      type: object
+      required:
+      - total_cost_usd
+      title: Usage
+      description: 'Usage for one metered request. `total_cost_usd` is always present (the
+
+        total quoted charge). `compute` and `data` are the additive breakdown;
+
+        each appears only where it applies. total_cost_usd always equals the sum
+
+        of the components that appear.'
+    DataFreshness:
+      properties:
+        data_as_of:
           anyOf:
           - type: string
           - type: 'null'
-          title: Thread Id
-        category:
-          $ref: '#/components/schemas/StreamCategory'
-        block:
-          oneOf:
-          - $ref: '#/components/schemas/ToolCallEvent'
-          - $ref: '#/components/schemas/ToolResultEvent'
-          - $ref: '#/components/schemas/ToolErrorEvent'
-          - $ref: '#/components/schemas/ToolRetryEvent'
-          - $ref: '#/components/schemas/StatusEvent'
-          - $ref: '#/components/schemas/SubagentEvent'
-          - $ref: '#/components/schemas/ReasoningEvent'
-          - $ref: '#/components/schemas/TextEvent'
-          - $ref: '#/components/schemas/DataPipelineAnswerEvent'
-          - $ref: '#/components/schemas/RetrievalAgentResultEvent'
-          - $ref: '#/components/schemas/RunSummaryEvent'
-          - $ref: '#/components/schemas/HeartbeatEvent'
-          - $ref: '#/components/schemas/StreamResetEvent'
-          - $ref: '#/components/schemas/StreamDoneEvent'
-          title: Block
-          discriminator:
-            propertyName: kind
-            mapping:
-              agent_result: '#/components/schemas/RetrievalAgentResultEvent'
-              data_pipeline_answer: '#/components/schemas/DataPipelineAnswerEvent'
-              heartbeat: '#/components/schemas/HeartbeatEvent'
-              reasoning: '#/components/schemas/ReasoningEvent'
-              run_summary: '#/components/schemas/RunSummaryEvent'
-              status: '#/components/schemas/StatusEvent'
-              stream_done: '#/components/schemas/StreamDoneEvent'
-              stream_reset: '#/components/schemas/StreamResetEvent'
-              subagent: '#/components/schemas/SubagentEvent'
-              text: '#/components/schemas/TextEvent'
-              tool_call: '#/components/schemas/ToolCallEvent'
-              tool_error: '#/components/schemas/ToolErrorEvent'
-              tool_result: '#/components/schemas/ToolResultEvent'
-              tool_retry: '#/components/schemas/ToolRetryEvent'
+          title: Data As Of
+          description: Date of the most recent observation in the card's data, as an ISO date (YYYY-MM-DD). Null for card types without a coverage date.
+          examples:
+          - '2026-06-30'
+        last_updated:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Updated
+          description: Date Tako last refreshed the underlying data, as an ISO date (YYYY-MM-DD).
+          examples:
+          - '2026-07-14'
+      type: object
+      title: DataFreshness
+      description: 'When the card''s data was last observed and last refreshed. Either field
+
+        may be null when that date isn''t available for the card type.'
+    RetrievalAgentRunList:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/RetrievalAgentRunSummary'
+          type: array
+          title: Data
+        has_more:
+          type: boolean
+          title: Has More
+          default: false
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
       type: object
       required:
-      - seq
-      - run_id
-      - category
-      - block
-      title: RetrievalAgentStreamEnvelope
-      description: 'Public SSE envelope for the Retrieval Agent run stream. It has the same
+      - data
+      title: RetrievalAgentRunList
+      description: 'List envelope for GET /v1/agent/retrieval/runs. The shape follows the
 
-        wire shape as AgentStreamEnvelope. The only difference is that the
-
-        terminal agent_result block carries RetrievalAgentResult (unified
-
-        top-level citations, no web_results), so the SSE terminal matches the
-
-        GET poll result.'
-    AnswerAgentMetadata:
+        OpenAI and Exa list convention.'
+    TextEvent:
       properties:
-        definitions:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/AgentAnswerDefinition'
-            type: array
-          - type: 'null'
-          title: Definitions
-        assumptions:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/AgentAnswerAssumption'
-            type: array
-          - type: 'null'
-          title: Assumptions
-        methodology:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/AgentAnswerMethodologyNote'
-            type: array
-          - type: 'null'
-          title: Methodology
+        kind:
+          type: string
+          const: text
+          title: Kind
+          default: text
+        id:
+          type: string
+          title: Id
+        delta:
+          type: string
+          title: Delta
+        done:
+          type: boolean
+          title: Done
+          default: false
       type: object
-      title: AnswerAgentMetadata
-      description: 'Answer-agent metadata. Citations live in the top-level `citations`
+      required:
+      - id
+      - delta
+      title: TextEvent
+    RunSummaryEvent:
+      properties:
+        kind:
+          type: string
+          const: run_summary
+          title: Kind
+          default: run_summary
+        status:
+          $ref: '#/components/schemas/AgentRunStatus'
+        created_at:
+          type: string
+          title: Created At
+        completed_at:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Completed At
+        error:
+          anyOf:
+          - $ref: '#/components/schemas/ErrorObject'
+          - type: 'null'
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/Usage'
+          - type: 'null'
+      type: object
+      required:
+      - status
+      - created_at
+      title: RunSummaryEvent
+      description: 'Terminal run metadata. The stream emits it once, immediately before
 
-        registry, so this carries only definitions, assumptions, and methodology.
+        stream_done. It mirrors the GET-poll run fields that the stream otherwise
 
-        Distinct from the shared AgentAnswerMetadata, which retains citations for
+        lacks; the result stays in the agent_result event. status, created_at,
 
-        the legacy AgentResult.'
-    KnowledgeCardRelevance:
-      type: string
-      enum:
-      - High
-      - Medium
-      - Low
-      title: KnowledgeCardRelevance
+        and completed_at are always present. error appears only on failure. usage
+
+        appears only on metered (pay-as-you-go) runs and is null otherwise.
+
+        agent_result plus run_summary equals the GET poll object.
+
+
+        It carries the same envelope `seq` as the stream_done that follows it (it
+
+        has no seq of its own), and the stream suppresses its SSE `id:`, so it
+
+        advances no resume cursor. Identify it by `kind`; never assume `seq` is
+
+        unique per frame.'
     AgentAnswerCitation:
       properties:
         index:
@@ -1959,174 +2127,6 @@ components:
         Retrieval Agent also populates excerpt and publish_date for web
 
         sources.'
-    TakoCardNode:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: Opaque, human-friendly public id (<name-slug>-<token>).
-        type:
-          $ref: '#/components/schemas/GraphNodeType'
-        name:
-          type: string
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-      type: object
-      required:
-      - id
-      - type
-      - name
-      title: TakoCardNode
-      description: 'Slim graph node for the search and answer card surface
-
-        (TakoCard.nodes). It is deliberately narrower than GraphNode: it carries
-
-        no `aliases` and no `subtype`. Callers that need the full node resolve
-
-        the id via /beta/graph/node/{id}.'
-    AnswerAgentStreamEnvelope:
-      properties:
-        seq:
-          type: integer
-          minimum: 0.0
-          title: Seq
-        run_id:
-          type: string
-          title: Run Id
-        thread_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Thread Id
-        category:
-          $ref: '#/components/schemas/StreamCategory'
-        block:
-          oneOf:
-          - $ref: '#/components/schemas/ToolCallEvent'
-          - $ref: '#/components/schemas/ToolResultEvent'
-          - $ref: '#/components/schemas/ToolErrorEvent'
-          - $ref: '#/components/schemas/ToolRetryEvent'
-          - $ref: '#/components/schemas/StatusEvent'
-          - $ref: '#/components/schemas/SubagentEvent'
-          - $ref: '#/components/schemas/ReasoningEvent'
-          - $ref: '#/components/schemas/TextEvent'
-          - $ref: '#/components/schemas/DataPipelineAnswerEvent'
-          - $ref: '#/components/schemas/AnswerAgentResultEvent'
-          - $ref: '#/components/schemas/RunSummaryEvent'
-          - $ref: '#/components/schemas/HeartbeatEvent'
-          - $ref: '#/components/schemas/StreamResetEvent'
-          - $ref: '#/components/schemas/StreamDoneEvent'
-          title: Block
-          discriminator:
-            propertyName: kind
-            mapping:
-              agent_result: '#/components/schemas/AnswerAgentResultEvent'
-              data_pipeline_answer: '#/components/schemas/DataPipelineAnswerEvent'
-              heartbeat: '#/components/schemas/HeartbeatEvent'
-              reasoning: '#/components/schemas/ReasoningEvent'
-              run_summary: '#/components/schemas/RunSummaryEvent'
-              status: '#/components/schemas/StatusEvent'
-              stream_done: '#/components/schemas/StreamDoneEvent'
-              stream_reset: '#/components/schemas/StreamResetEvent'
-              subagent: '#/components/schemas/SubagentEvent'
-              text: '#/components/schemas/TextEvent'
-              tool_call: '#/components/schemas/ToolCallEvent'
-              tool_error: '#/components/schemas/ToolErrorEvent'
-              tool_result: '#/components/schemas/ToolResultEvent'
-              tool_retry: '#/components/schemas/ToolRetryEvent'
-      type: object
-      required:
-      - seq
-      - run_id
-      - category
-      - block
-      title: AnswerAgentStreamEnvelope
-      description: 'Public SSE envelope for the Answer Agent run stream. Identical wire shape
-
-        to AgentStreamEnvelope; the only difference is the terminal agent_result
-
-        block carries AnswerAgentResult (top-level citations, no web_results).'
-    RetrievalAgentResultEvent:
-      properties:
-        kind:
-          type: string
-          const: agent_result
-          title: Kind
-          default: agent_result
-        id:
-          type: string
-          title: Id
-        data:
-          $ref: '#/components/schemas/RetrievalAgentResult'
-      type: object
-      required:
-      - id
-      - data
-      title: RetrievalAgentResultEvent
-    StreamDoneEvent:
-      properties:
-        kind:
-          type: string
-          const: stream_done
-          title: Kind
-          default: stream_done
-      type: object
-      title: StreamDoneEvent
-    StatusEvent:
-      properties:
-        kind:
-          type: string
-          const: status
-          title: Kind
-          default: status
-        message:
-          type: string
-          title: Message
-        parent_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Parent Id
-      type: object
-      required:
-      - message
-      title: StatusEvent
-    ToolResultEvent:
-      properties:
-        kind:
-          type: string
-          const: tool_result
-          title: Kind
-          default: tool_result
-        id:
-          type: string
-          title: Id
-        tool:
-          type: string
-          title: Tool
-        elapsed_ms:
-          type: integer
-          title: Elapsed Ms
-          default: 0
-        link:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Link
-        parent_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Parent Id
-      type: object
-      required:
-      - id
-      - tool
-      title: ToolResultEvent
   securitySchemes:
     apiKey:
       type: apiKey

@@ -1,21 +1,30 @@
 generated: '2026-07-21'
 method: searched
 host: https://tako.com
-documents:
+referenced_by_catalog:
+- href: https://tako.com/openapi.json
+  type: application/openapi+json
+  title: Tako OpenAPI (with x-payment-info / MPP metadata)
+- href: https://docs.tako.com/api-reference/openapi.yaml
+  type: application/yaml
+  title: Tako OpenAPI 3.1.0 (captured to openapi/tako-openapi-original.yml)
+hosts:
+- host: https://tako.com
+  documents:
   - path: /.well-known/api-catalog
     status: 200
-    type: application/linkset+json
     file: tako-api-catalog.json
+    type: application/linkset+json
     note: RFC 9727 linkset; points to docs, a payment-aware OpenAPI, an MPP manifest, and an agent guide.
   - path: /.well-known/mpp.json
     status: 200
-    type: application/json
     file: tako-mpp.json
+    type: application/json
     note: Machine Payments Protocol manifest — per-request pricing, data domains, provider info.
   - path: /.well-known/agent.md
     status: 200
-    type: text/markdown
     file: tako-agent.md
+    type: text/markdown
     note: Agent usage guide — endpoint chooser, MPP pricing table, data-domain coverage.
   - path: /.well-known/security.txt
     status: 404
@@ -25,10 +34,8 @@ documents:
     status: 404
   - path: /.well-known/ai-plugin.json
     status: 404
-referenced_by_catalog:
-  - href: https://tako.com/openapi.json
-    type: application/openapi+json
-    title: Tako OpenAPI (with x-payment-info / MPP metadata)
-  - href: https://docs.tako.com/api-reference/openapi.yaml
-    type: application/yaml
-    title: Tako OpenAPI 3.1.0 (captured to openapi/tako-openapi-original.yml)
+x-shape-fix:
+  converted: '2026-08-20'
+  from: documents
+  note: Rewritten into hosts[] -> documents[], the only shape well_known_docs() in score.rb reads. A served
+    .well-known surface recorded in any other shape scores as absent.
