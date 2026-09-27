@@ -79,7 +79,7 @@ maintainers:
   email: api-support@trytako.com
 apis:
 - aid: tako:tako-agent-api
-  name: Tako agent API
+  name: Tako Agent API
   description: The agent API from Tako — 4 operation(s) for agent.
   humanURL: https://docs.tako.com
   baseURL: https://tako.com/api
