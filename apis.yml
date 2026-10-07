@@ -107,6 +107,8 @@ apis:
   - type: Authentication
     url: authentication/tako-authentication.yml
 common:
+- type: Plans
+  url: plans/tako-plans-pricing.yml
 - type: Website
   url: https://www.tako.com/
 - type: DeveloperPortal
