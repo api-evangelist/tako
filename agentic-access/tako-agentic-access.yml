@@ -1,109 +1,177 @@
-generated: '2026-07-21'
+generated: '2026-09-23'
 method: generated
-source: openapi/tako-openapi-original.yml
-audience: null
-note: >-
-  Recommended x-agentic-access execution contracts, classified per operation from
-  the Tako OpenAPI (Curity Access Intelligence model). GET/HEAD → connected/read;
-  write-method POSTs → acting/write. No operation is payment/transfer/safety-critical
-  at the API-operation level (Tako's machine-payments surface is billing metadata,
-  not a transfer endpoint). A governance starting point, not an authoritative
-  provider claim.
+source: openapi/tako-agent-api-openapi.yml, openapi/tako-tako-api-openapi.yml
+description: Recommended x-agentic-access execution contracts, classified heuristically from
+  the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
+  audience per deployment. See research/curity/agentic-governance/.
 summary:
   operations: 13
   by_action_class:
-    connected: 7
-    acting: 6
+    connected: 8
+    acting: 5
   by_consequence:
-    read: 7
-    write: 6
-  human_in_the_loop: 0
-  audit_required: 6
+    read: 8
+    safety-critical: 2
+    write: 3
+  human_in_the_loop_required: 2
 operations:
-  - operationId: graphSearch
-    method: GET
-    path: /beta/graph/search
-    action_class: connected
+- path: /v1/agent/answer/runs
+  method: get
+  operationId: listAnswerAgentRuns
+  x-agentic-access:
+    action-class: connected
     consequence: read
-    token: {ttl_seconds: 3600}
-  - operationId: graphRelated
-    method: GET
-    path: /beta/graph/related
-    action_class: connected
-    consequence: read
-    token: {ttl_seconds: 3600}
-  - operationId: graphNode
-    method: GET
-    path: /beta/graph/node/{id}
-    action_class: connected
-    consequence: read
-    token: {ttl_seconds: 3600}
-  - operationId: listAnswerAgentRuns
-    method: GET
-    path: /v1/agent/answer/runs
-    action_class: connected
-    consequence: read
-    token: {ttl_seconds: 3600}
-  - operationId: getAnswerAgentRun
-    method: GET
-    path: /v1/agent/answer/runs/{run_id}
-    action_class: connected
-    consequence: read
-    token: {ttl_seconds: 3600}
-  - operationId: listRetrievalAgentRuns
-    method: GET
-    path: /v1/agent/retrieval/runs
-    action_class: connected
-    consequence: read
-    token: {ttl_seconds: 3600}
-  - operationId: getRetrievalAgentRun
-    method: GET
-    path: /v1/agent/retrieval/runs/{run_id}
-    action_class: connected
-    consequence: read
-    token: {ttl_seconds: 3600}
-  - operationId: search
-    method: POST
-    path: /v3/search
-    action_class: acting
-    consequence: write
-    token: {ttl_seconds: 900}
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/agent/answer/runs
+  method: post
+  operationId: createAnswerAgentRun
+  x-agentic-access:
+    action-class: acting
+    consequence: safety-critical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 120
+      exchange: true
+      purpose-required: true
+      proof-of-possession: true
+    escalation:
+      human-in-the-loop: required
     audit: required
-  - operationId: answer
-    method: POST
-    path: /v1/answer
-    action_class: acting
-    consequence: write
-    token: {ttl_seconds: 900}
+- path: /v1/agent/answer/runs/{run_id}
+  method: get
+  operationId: getAnswerAgentRun
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/agent/retrieval/runs
+  method: get
+  operationId: listRetrievalAgentRuns
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/agent/retrieval/runs
+  method: post
+  operationId: createRetrievalAgentRun
+  x-agentic-access:
+    action-class: acting
+    consequence: safety-critical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 120
+      exchange: true
+      purpose-required: true
+      proof-of-possession: true
+    escalation:
+      human-in-the-loop: required
     audit: required
-  - operationId: contents
-    method: POST
-    path: /v1/contents
-    action_class: acting
+- path: /v1/agent/retrieval/runs/{run_id}
+  method: get
+  operationId: getRetrievalAgentRun
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v3/search
+  method: post
+  operationId: search
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/answer
+  method: post
+  operationId: answer
+  x-agentic-access:
+    action-class: acting
     consequence: write
-    token: {ttl_seconds: 900}
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
     audit: required
-    note: Meters/bills a card CSV export beyond the free row allowance.
-  - operationId: createCard
-    method: POST
-    path: /v1/thin_viz/create/
-    action_class: acting
+- path: /beta/graph/search
+  method: get
+  operationId: graphSearch
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /beta/graph/related
+  method: get
+  operationId: graphRelated
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /beta/graph/node/{id}
+  method: get
+  operationId: graphNode
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v1/contents
+  method: post
+  operationId: contents
+  x-agentic-access:
+    action-class: acting
     consequence: write
-    token: {ttl_seconds: 900}
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
     audit: required
-  - operationId: createAnswerAgentRun
-    method: POST
-    path: /v1/agent/answer/runs
-    action_class: acting
+- path: /v1/thin_viz/create/
+  method: post
+  operationId: createCard
+  x-agentic-access:
+    action-class: acting
     consequence: write
-    token: {ttl_seconds: 900}
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
     audit: required
-    note: PAYMENT_REQUIRED (402) pre-dispatch credit gate.
-  - operationId: createRetrievalAgentRun
-    method: POST
-    path: /v1/agent/retrieval/runs
-    action_class: acting
-    consequence: write
-    token: {ttl_seconds: 900}
-    audit: required
-    note: PAYMENT_REQUIRED (402) pre-dispatch credit gate.
